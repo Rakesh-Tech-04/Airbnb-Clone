@@ -1,5 +1,5 @@
-const cloudinary = require("../middleware/cloudinary")
 const Listing = require("../models/listing")
+const { uploadInCloudinary, cloudinary } = require("../utils/cloudinary")
 
 module.exports.renderListing = async (req, res) => {
     let allListing = await Listing.find({})
@@ -13,21 +13,29 @@ module.exports.selectedListing = async (req, res) => {
 }
 
 module.exports.createListing = async (req, res) => {
-    let newListing = new Listing(req.body)
+    let data = JSON.parse(req.body.data)
+    console.log('body', data)
+    console.log(req.files)
+
+    let image = await Promise.all((req.files).map((file) => uploadInCloudinary(file)))
+    let newListing = new Listing(data)
+    newListing.user = req.user.id
+    newListing.image = image
     await newListing.save()
     res.status(201).json(newListing)
 }
 
 module.exports.updateListing = async (req, res) => {
     let { listingId } = req.params
-    let oldListing = await Listing.findById(listingId)
-    let listing = await Listing.findByIdAndUpdate(listingId, req.body, { new: true })
-    let newIds = new Set((listing.image).map(img => img.publicId))
-    for (const img of oldListing.image) {
-        if (!newIds.has(img.publicId)) {
-            await cloudinary.uploader.destroy(img.publicId)
-        }
+    let data = JSON.parse(req.body.data)
+    let replacementIndex = JSON.parse(req.body.replacementIndex)
+    for (let i = 0; i < replacementIndex.length; i++) {
+        let index = replacementIndex[i]
+        await cloudinary.uploader.destroy(data.image[index].publicId, { resource_type: "image" })
+        let image = await uploadInCloudinary(req.files[i])
+        data.image[index] = image
     }
+    let listing = await Listing.findByIdAndUpdate(listingId, data, { new: true })
     res.status(201).json(listing)
 }
 
@@ -36,7 +44,7 @@ module.exports.deleteListing = async (req, res) => {
     let listing = await Listing.findByIdAndDelete(listingId)
     for (const img of listing.image) {
         if (img.publicId) {
-            await cloudinary.uploader.destroy(img.publicId)
+            await cloudinary.uploader.destroy(img.publicId, { resource_type: "image" })
         }
     }
     res.status(200).json(listing)

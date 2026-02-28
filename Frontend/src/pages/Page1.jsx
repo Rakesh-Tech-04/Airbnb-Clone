@@ -5,6 +5,8 @@ import { FunctionalityButton } from "../components/FunctionalityButton"
 import { LogoButton } from "../components/LogoButton"
 import { useFormContext } from 'react-hook-form'
 import { useNavigate } from "react-router-dom"
+import { useUser } from "../util/UserContext"
+import { useEffect } from "react"
 
 export const Page1 = () => {
     let navigate = useNavigate()
@@ -37,11 +39,12 @@ export const Page1 = () => {
             width: '85vw'
         }
     }))
+   
     let Label = styled('p')({
         fontSize: '1.3rem',
         marginBlock: '0.5rem'
     })
-    const onSubmit = async () => {
+    const onSubmit =  () => {
         navigate('/listing/addListing/page2')
     }
     return (

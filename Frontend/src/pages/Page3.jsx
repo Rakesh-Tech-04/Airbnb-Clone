@@ -5,9 +5,7 @@ import Box from "@mui/material/Box"
 import CardMedia from '@mui/material/CardMedia';
 import { FunctionalityButton } from '../components/FunctionalityButton'
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { api } from "../util/axios"
-import { useUser } from '../util/UserContext';
 
 export const Page3 = () => {
     let [isLoading, setIsLoading] = useState(false)
@@ -15,9 +13,9 @@ export const Page3 = () => {
     let [data, setData] = useState({})
     let [preImage, setPreImage] = useState([])
     let { getValues } = useFormContext()
-    let { user } = useUser()
+
     useEffect(() => {
-       
+
         setData(getValues())
         let img = getValues().image
         if (img) {
@@ -29,17 +27,14 @@ export const Page3 = () => {
         if (isLoading) return
         setIsLoading(true)
         try {
-            let imageUrl = (Array.from(data.image).map((img) => {
-                let formData = new FormData()
-                formData.append('file', img[0])
-                formData.append('upload_preset', "airbnb_clone")
-                formData.append('cloud_name', 'dznrdjvbj')
-
-                return axios.post("https://api.cloudinary.com/v1_1/dznrdjvbj/image/upload", formData).then(({ data }) => { return { url: data.url, publicId: data.public_id } })
-            }))
-            let image = await Promise.all(imageUrl)
-            let updateValue = { ...data, image, user: user.id }
-            await api.post('/listing', updateValue).then(() => {
+            console.log(data.image)
+            let formData = new FormData();
+            (data.image).forEach(img =>
+                formData.append('images', img[0])
+            )
+            let { image, ...newData } = data
+            formData.append("data", JSON.stringify(newData))
+            await api.post('/listing', formData).then(() => {
                 navigate('/listing')
             }).catch((err) => { console.log(err) })
         }

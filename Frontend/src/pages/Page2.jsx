@@ -17,7 +17,6 @@ import { useNavigate } from 'react-router-dom';
 export const Page2 = () => {
     let navigate = useNavigate()
     let [describes, setDescribes] = useState([
-        // { name: 'Trending', border: true, icon: WhatshotIcon },
         { name: 'Villa', border: true, icon: VillaIcon },
         { name: 'Farm House', border: true, icon: CottageIcon },
         { name: 'Pool House', border: true, icon: PoolIcon },
@@ -34,6 +33,7 @@ export const Page2 = () => {
             ...describe,
             border: !value.includes(describe.name)
         })))
+        
     }, [])
     const iconStyle = {
         fontSize: '2rem',

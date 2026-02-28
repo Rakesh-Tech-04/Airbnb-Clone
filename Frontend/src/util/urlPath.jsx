@@ -9,7 +9,6 @@ import { Page3 } from "../pages/Page3";
 import { Authentication } from "../pages/Authentication";
 import { BookingConfirmation } from "../pages/BookingConfirmation";
 import { MyListing } from "../pages/MyListing";
-import { useUser } from "./UserContext";
 
 export const router = createBrowserRouter([{
     path: "/",

@@ -7,14 +7,20 @@ let UserContext = createContext()
 
 export const UserContextProvider = ({ children }) => {
     let [user, setUser] = useState(null)
+    let [loading, setLoading] = useState(true)
     useEffect(() => {
-        api.get('/user/authStatus').then(({ data }) => {
-            console.log(data)
-            setUser(data)
-        })
+
+        api.get('/user/authStatus')
+            .then(({ data }) => {
+                console.log(data)
+                setUser(data)
+            })
+            .catch(() => { setUser(null) })
+            .finally(() => { setLoading(false) })
+
     }, [])
     return (
-        <UserContext.Provider value={{ user, setUser }}>
+        <UserContext.Provider value={{ user, setUser, loading, setLoading }}>
             {children}
         </UserContext.Provider>
     )

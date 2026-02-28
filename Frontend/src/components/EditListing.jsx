@@ -66,24 +66,22 @@ export const EditListing = ({ listing, setListing, handleClose }) => {
         marginBlock: '0.5rem'
     })
     const onSubmit = async (data) => {
-        let imageUrl = (Array.from(data.image).map((img, i) => {
-            if (img[0]) {
-                let formData = new FormData()
-                formData.append('file', img[0])
-                formData.append('upload_preset', "airbnb_clone")
-                formData.append('cloud_name', 'dznrdjvbj')
-                return axios.post("https://api.cloudinary.com/v1_1/dznrdjvbj/image/upload", formData).then(({ data }) => { return { url: data.url, publicId: data.public_id } })
+        let formData = new FormData();
+        let replacementIndex = [];
+        (data.image).forEach((file, i) => {
+            if (file && file[0]) {
+                formData.append('images', file[0])
+                replacementIndex.push(i)
             }
-            else {
-                return listing.image[i]
-            }
-        }))
-        let image = await Promise.all(imageUrl)
+        }
+        );
+        formData.append('replacementIndex', JSON.stringify(replacementIndex))
+        formData.append('data', JSON.stringify({ ...data, image: listing.image }))
         handleClose()
-        let updateValue = { ...data, image }
-        api.put(`/listing/${listing._id}`, updateValue).then(({ data }) => {
+        api.put(`/listing/${listing._id}`, formData).then(({ data }) => {
             setListing(data)
         }).catch((err) => {
+            console.log(err)
             if (err.status === 401) {
                 navigate('/user/authentication')
             }
