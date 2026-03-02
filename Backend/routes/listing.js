@@ -3,7 +3,6 @@ const { wrapAsync } = require("../middleware/wrapAsync")
 const { createListing, deleteListing, renderListing, updateListing, selectedListing, searchListing, myListing } = require("../controller/listing")
 const { verifyToken } = require("../middleware/authentication")
 const upload = require("../middleware/multer")
-const listingValidation = require("../middleware/joiValidation")
 const listingRouter = express.Router()
 
 listingRouter

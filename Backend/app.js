@@ -2,7 +2,6 @@ require('dotenv').config()
 const express = require("express")
 const mongoose = require("mongoose")
 const app = express()
-// const ExpressError = require("./middleware/ExpressError")
 const cors = require("cors")
 const userRouter = require("./routes/user")
 const listingRouter = require('./routes/listing')
@@ -23,10 +22,6 @@ app.use(express.urlencoded({ extended: true }))
 app.use("/api/v1/user", userRouter)
 app.use('/api/v1/listing', listingRouter)
 app.use('/api/v1/booking', bookingRouter)
-
-// app.use((req, res, next) => {
-//     next(new ExpressError(404, "Page not found"))
-// })
 
 app.use((err, req, res, next) => {
     // Mongoose CastError

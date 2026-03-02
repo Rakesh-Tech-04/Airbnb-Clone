@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt')
 const User = require('../models/user')
 const { generateToken } = require('../middleware/authentication.js')
 const jwt = require("jsonwebtoken")
-const ExpressError = require('../middleware/ExpressError.js')
+const ExpressError = require('../utils/ExpressError.js')
 
 module.exports.signup = async (req, res) => {
     let { email, password, name } = req.body

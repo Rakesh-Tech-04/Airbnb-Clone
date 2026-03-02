@@ -1,6 +1,6 @@
 const Listing = require("../models/listing")
 const { uploadInCloudinary, cloudinary } = require("../utils/cloudinary")
-const ExpressError = require('../middleware/ExpressError')
+const ExpressError = require('../utils/ExpressError')
 const listingSchema = require("../utils/joi")
 
 module.exports.renderListing = async (req, res) => {

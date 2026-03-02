@@ -1,5 +1,5 @@
 const listingSchema = require("../utils/joi")
-const ExpressError = require("../middleware/ExpressError")
+const ExpressError = require("../utils/ExpressError")
 
 const listingValidation = (req, res, next) => {
     let { error } = listingSchema.validate(req.body, {

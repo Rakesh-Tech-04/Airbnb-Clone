@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken")
-const ExpressError = require("./ExpressError")
+const ExpressError = require("../utils/ExpressError")
 
 module.exports.generateToken = (playload) => {
     return jwt.sign(playload, process.env.JWTSECRETCODE)
