@@ -1,5 +1,7 @@
 const Listing = require("../models/listing")
 const { uploadInCloudinary, cloudinary } = require("../utils/cloudinary")
+const ExpressError = require('../middleware/ExpressError')
+const listingSchema = require("../utils/joi")
 
 module.exports.renderListing = async (req, res) => {
     let allListing = await Listing.find({})
@@ -12,20 +14,31 @@ module.exports.selectedListing = async (req, res) => {
     res.status(200).json(listing)
 }
 
-module.exports.createListing = async (req, res) => {
+module.exports.createListing = async (req, res,next) => {
     let data = JSON.parse(req.body.data)
-    console.log('body', data)
-    console.log(req.files)
-
     let image = await Promise.all((req.files).map((file) => uploadInCloudinary(file)))
+    data = { ...data, image }
+    let { error } = listingSchema.validate(data, {
+        abortEarly: false,
+        allowUnknown: false
+    })
+    if (error) {
+        for (const img of image) {
+            if (img.publicId) {
+                await cloudinary.uploader.destroy(img.publicId, { resource_type: "image" })
+            }
+        }
+        let errmsg = error.details.map((el) => el.message).join(', ');
+        return next(new ExpressError(400, errmsg))
+    }
     let newListing = new Listing(data)
     newListing.user = req.user.id
     newListing.image = image
     await newListing.save()
-    res.status(201).json(newListing)
+    res.status(201).json({success:true,message:'Listing is created'})
 }
 
-module.exports.updateListing = async (req, res) => {
+module.exports.updateListing = async (req, res,next) => {
     let { listingId } = req.params
     let data = JSON.parse(req.body.data)
     let replacementIndex = JSON.parse(req.body.replacementIndex)
@@ -34,6 +47,14 @@ module.exports.updateListing = async (req, res) => {
         await cloudinary.uploader.destroy(data.image[index].publicId, { resource_type: "image" })
         let image = await uploadInCloudinary(req.files[i])
         data.image[index] = image
+    }
+    let { error } = listingSchema.validate(data, {
+        abortEarly: false,
+        allowUnknown: false
+    })
+    if (error) {
+        let errmsg = error.details.map((el) => el.message).join(', ');
+        return next(new ExpressError(400, errmsg))
     }
     let listing = await Listing.findByIdAndUpdate(listingId, data, { new: true })
     res.status(201).json(listing)

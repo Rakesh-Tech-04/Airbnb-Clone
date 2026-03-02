@@ -2,7 +2,7 @@ require('dotenv').config()
 const express = require("express")
 const mongoose = require("mongoose")
 const app = express()
-const ExpressError = require("./middleware/ExpressError")
+// const ExpressError = require("./middleware/ExpressError")
 const cors = require("cors")
 const userRouter = require("./routes/user")
 const listingRouter = require('./routes/listing')
@@ -24,13 +24,36 @@ app.use("/api/v1/user", userRouter)
 app.use('/api/v1/listing', listingRouter)
 app.use('/api/v1/booking', bookingRouter)
 
-app.use((req, res, next) => {
-    next(new ExpressError(404, "Page not found"))
-})
+// app.use((req, res, next) => {
+//     next(new ExpressError(404, "Page not found"))
+// })
 
 app.use((err, req, res, next) => {
-    const { status = 500, message = "Something went wrong" } = err
-    res.status(status).json(message)
+    // Mongoose CastError
+    console.log(err.name)
+    if (err.name === "CastError") {
+        err.status = 400;
+        err.message = "Invalid ID format";
+    }
+
+    // Mongoose ValidationError
+    if (err.name === "ValidationError") {
+        err.status = 400;
+    }
+
+    // Duplicate Key
+    if (err.code === 11000) {
+        err.status = 400;
+        err.message = "Duplicate field value";
+    }
+
+    const status = err.status || 500;
+    const message = err.message || "Internal Server Error";
+
+    res.status(status).json({
+        success: false,
+        message
+    });
 })
 
 app.listen(process.env.PORT, () => {

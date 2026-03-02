@@ -4,10 +4,10 @@ import { styled } from '@mui/material/styles';
 import { FunctionalityButton } from './FunctionalityButton';
 import { api } from '../util/axios';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { useForm } from 'react-hook-form'
 import CloseIcon from '@mui/icons-material/Close';
 import { LogoButton } from './LogoButton';
+import { toast } from 'react-toastify';
 
 const style = {
     position: 'absolute',
@@ -80,9 +80,10 @@ export const EditListing = ({ listing, setListing, handleClose }) => {
         handleClose()
         api.put(`/listing/${listing._id}`, formData).then(({ data }) => {
             setListing(data)
-        }).catch((err) => {
-            console.log(err)
-            if (err.status === 401) {
+            toast.success('Updated Your Listing');
+        }).catch(({ response }) => {
+            toast.error(response.data.message)
+            if (response.status === 401) {
                 navigate('/user/authentication')
             }
         })
@@ -91,10 +92,13 @@ export const EditListing = ({ listing, setListing, handleClose }) => {
         if (isDeleting) return
         setIsDeleting(true)
         try {
-            await api.delete(`/listing/${listingId}`).then(() =>
+            await api.delete(`/listing/${listingId}`).then(() => {
                 navigate("/listing")
-            ).catch((err) => {
-                if (err.status === 401) {
+                toast.success('Your Listing Deleted ')
+            }
+            ).catch(({ response }) => {
+                toast.error(response.data.message)
+                if (response.status === 401) {
                     navigate('/user/authentication')
                 }
             })
@@ -154,6 +158,7 @@ export const EditListing = ({ listing, setListing, handleClose }) => {
                 <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center' }}>
                     <FunctionalityButton title={"Edit Listing"} loadingTitle={"Update...."} type={'submit'} isSubmitting={isSubmitting} />
                     <FunctionalityButton title={"Delete Listing"} loadingTitle={"Delete...."} isSubmitting={isDeleting} onClick={() => handleDelete(listing._id)} type={'button'} />
+
                 </Box>
             </form>
 

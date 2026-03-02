@@ -9,6 +9,8 @@ import Typography from '@mui/material/Typography';
 import { Pagination } from 'swiper/modules';
 import CardContent from '@mui/material/CardContent';
 import { BackButton } from "../components/BackButton";
+import { toast } from 'react-toastify';
+
 
 export const MyListing = () => {
     let navigate = useNavigate()
@@ -18,6 +20,8 @@ export const MyListing = () => {
         console.log(param.userId)
         api.get(`/listing/mylisting/${param.userId}`).then(({ data }) => {
             setAllListing(data)
+        }).catch(({ response }) => {
+            toast.error(response.data.message)
         })
     }, [])
     const goToListing = (listingId) => {
@@ -29,12 +33,11 @@ export const MyListing = () => {
                 display: 'flex',
                 paddingInline: '1rem'
             }}>
-                <BackButton  />
+                <BackButton />
                 <Box sx={{
                     fontSize: '2rem',
                     textAlign: 'center',
                     border: '2px solid Black',
-                    // display:'inline',
                     padding: '1rem',
                     marginBlock: '2rem',
                     width: '20rem',

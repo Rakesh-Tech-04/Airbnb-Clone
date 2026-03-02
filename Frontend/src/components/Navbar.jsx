@@ -17,6 +17,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { api } from '../util/axios';
 import { useUser } from '../util/UserContext';
+import { toast } from 'react-toastify'
 
 const Search = styled('div')(({ theme }) => ({
     border: '2px solid #ccc',
@@ -111,7 +112,8 @@ export const Navbar = () => {
 
     const handleAuth = () => {
         if (user) {
-            api.delete('/user/logout').then(() => {
+            api.delete('/user/logout').then(({ data }) => {
+                toast.success(data.message)
                 setUser(null)
             })
         }

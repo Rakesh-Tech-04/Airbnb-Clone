@@ -6,6 +6,7 @@ import CardMedia from '@mui/material/CardMedia';
 import { FunctionalityButton } from '../components/FunctionalityButton'
 import { useNavigate } from 'react-router-dom';
 import { api } from "../util/axios"
+import { toast } from 'react-toastify';
 
 export const Page3 = () => {
     let [isLoading, setIsLoading] = useState(false)
@@ -15,28 +16,37 @@ export const Page3 = () => {
     let { getValues } = useFormContext()
 
     useEffect(() => {
-
-        setData(getValues())
-        let img = getValues().image
-        if (img) {
-            const urls = (img).map(item => URL.createObjectURL(item[0]))
+        let values = getValues()
+        if (Object.keys(values).length <= 1) navigate('/listing/addListing/page1')
+        setData(values)
+        if (values.image) {
+            const urls = (values.image).map(item => URL.createObjectURL(item[0]))
             setPreImage(urls)
         }
     }, [])
+
     const handleButton = async () => {
         if (isLoading) return
         setIsLoading(true)
         try {
-            console.log(data.image)
             let formData = new FormData();
             (data.image).forEach(img =>
                 formData.append('images', img[0])
             )
             let { image, ...newData } = data
             formData.append("data", JSON.stringify(newData))
-            await api.post('/listing', formData).then(() => {
+            await api.post('/listing', formData).then(({ data }) => {
+                toast.success(data.message)
                 navigate('/listing')
-            }).catch((err) => { console.log(err) })
+            }).catch(({ response }) => {
+                toast.error(response.data.message)
+                if (response.status === 401) {
+                    navigate('/user/authentication')
+                }
+                else {
+                    navigate('/listing/addListing/page1')
+                }
+            })
         }
         finally {
             setIsLoading(false)

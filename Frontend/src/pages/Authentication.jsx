@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { useUser } from "../util/UserContext";
+import { toast } from 'react-toastify'
 
 export const Authentication = () => {
     let navigate = useNavigate()
@@ -38,8 +39,11 @@ export const Authentication = () => {
     const onSubmit = async (data) => {
         let url = authTitle === 'Login' ? "/user/login" : "/user/signup"
         api.post(url, data).then(({ data }) => {
-            setUser(data)
+            setUser(data.user)
+            toast.success(data.message)
             navigate(-1)
+        }).catch(({ response }) => {
+            toast.error(response.data.message)
         })
     }
     return (
@@ -88,6 +92,7 @@ export const Authentication = () => {
                     <FunctionalityButton title={authTitle} />
                     <Box>Create new account <span onClick={changeAuth} style={{ color: 'red', cursor: 'pointer' }}>{authTitle == 'Login' ? 'Sign Up' : 'Login'}</span></Box>
                 </form>
+
             </Box>
             {/* </Box > */}
         </>

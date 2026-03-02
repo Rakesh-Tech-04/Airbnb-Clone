@@ -2,10 +2,12 @@ const bcrypt = require('bcrypt')
 const User = require('../models/user')
 const { generateToken } = require('../middleware/authentication.js')
 const jwt = require("jsonwebtoken")
+const ExpressError = require('../middleware/ExpressError.js')
 
 module.exports.signup = async (req, res) => {
     let { email, password, name } = req.body
-    if (!email || !password || !name) return res.status(400).json("Invalid Inputs")
+    if (!email || !password || !name) throw new ExpressError(400, "Email,Name and Password required")
+
     password = await bcrypt.hash(password, 10)
     let newUser = new User({ email, password, name })
     let playload = {
@@ -19,16 +21,17 @@ module.exports.signup = async (req, res) => {
         sameSite: "strict"
     })
     await newUser.save()
-    res.status(201).json(playload)
+    res.status(201).json({ success: true, user: playload, message: 'Welcome To Airbnb' })
 }
 
 module.exports.login = async (req, res) => {
     let { email, password } = req.body
-    if (!email || !password) return res.status(400).json("Invalid Inputs")
+    if (!email || !password) throw new ExpressError(400, "Email and password required");
+
     let user = await User.findOne({ email })
-    if (!user) return res.status(400).json("Invalid requirement")
+    if (!user) throw new ExpressError(401, "Invalid email or password")
     let isMatch = await bcrypt.compare(password, user.password)
-    if (!isMatch) return res.status(400).json("Invalid requirement")
+    if (!isMatch) throw new ExpressError(401, "Invalid email or password")
     let playload = {
         id: user._id,
         name: user.name
@@ -39,7 +42,7 @@ module.exports.login = async (req, res) => {
         secure: true,
         sameSite: "strict"
     })
-    res.status(200).json(playload)
+    res.status(200).json({ success: true, user: playload, message: 'You Logged In' })
 }
 
 module.exports.logout = async (req, res) => {
@@ -48,7 +51,7 @@ module.exports.logout = async (req, res) => {
         secure: true,
         sameSite: "strict"
     })
-    res.status(204).json('done')
+    res.status(200).json({ success: true, message: "You Logged Out" })
 }
 
 module.exports.authStatus = async (req, res) => {

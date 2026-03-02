@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken")
+const ExpressError = require("./ExpressError")
 
 module.exports.generateToken = (playload) => {
     return jwt.sign(playload, process.env.JWTSECRETCODE)
@@ -13,6 +14,6 @@ module.exports.verifyToken = (req, res, next) => {
         next()
     }
     catch (err) {
-        return res.status(401).json({ message: 'Invalide user' })
+        next(new ExpressError(401, 'Invalid User'))
     }
 }
