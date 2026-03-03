@@ -1,10 +1,11 @@
 const Listing = require("../models/listing")
+const Review = require("../models/review")
 const { uploadInCloudinary, cloudinary } = require("../utils/cloudinary")
 const ExpressError = require('../utils/ExpressError')
-const listingSchema = require("../utils/joi")
+const { listingSchema } = require("../utils/joi")
 
 module.exports.renderListing = async (req, res) => {
-    let allListing = await Listing.find({})
+    let allListing = await Listing.find({}).sort({ createdAt: -1 })
     res.status(200).json(allListing)
 }
 
@@ -14,7 +15,7 @@ module.exports.selectedListing = async (req, res) => {
     res.status(200).json(listing)
 }
 
-module.exports.createListing = async (req, res,next) => {
+module.exports.createListing = async (req, res, next) => {
     let data = JSON.parse(req.body.data)
     let image = await Promise.all((req.files).map((file) => uploadInCloudinary(file)))
     data = { ...data, image }
@@ -35,10 +36,10 @@ module.exports.createListing = async (req, res,next) => {
     newListing.user = req.user.id
     newListing.image = image
     await newListing.save()
-    res.status(201).json({success:true,message:'Listing is created'})
+    res.status(201).json({ success: true, message: 'Listing is created' })
 }
 
-module.exports.updateListing = async (req, res,next) => {
+module.exports.updateListing = async (req, res, next) => {
     let { listingId } = req.params
     let data = JSON.parse(req.body.data)
     let replacementIndex = JSON.parse(req.body.replacementIndex)
@@ -62,11 +63,13 @@ module.exports.updateListing = async (req, res,next) => {
 
 module.exports.deleteListing = async (req, res) => {
     let { listingId } = req.params
+    await Review.deleteMany({ listing: listingId })
     let listing = await Listing.findByIdAndDelete(listingId)
     for (const img of listing.image) {
         if (img.publicId) {
             await cloudinary.uploader.destroy(img.publicId, { resource_type: "image" })
         }
+
     }
     res.status(200).json(listing)
 }
@@ -91,6 +94,6 @@ module.exports.searchListing = async (req, res) => {
 
 module.exports.myListing = async (req, res) => {
     let { userId } = req.params
-    let MyListing = await Listing.find({ user: userId })
+    let MyListing = await Listing.find({ user: userId }).sort({ createdAt: -1 })
     res.json(MyListing)
 }

@@ -16,13 +16,11 @@ export const BookingConfirmation = () => {
         marginBlock: '1.5rem'
     })
     useEffect(() => {
-        api.get(`/booking/${params.bookingId}`).then(({ data }) => {
+        api.get(`listing/booking/${params.bookingId}`).then(({ data }) => {
             setBookingDetail(data)
         })
     }, [])
-    // useEffect(() => {
-    //     console.log(bookingDetail)
-    // }, [bookingDetail])
+   
     const handleClick = () => {
         navigate('/listing')
     }

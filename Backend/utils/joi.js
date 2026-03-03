@@ -1,6 +1,6 @@
 const Joi = require('joi');
 
-const listingSchema = Joi.object({
+module.exports.listingSchema = Joi.object({
     title: Joi.string()
         .trim()
         .min(3)
@@ -36,8 +36,31 @@ const listingSchema = Joi.object({
     describe: Joi.array()
         .items(Joi.string())
         .optional()
-
-
 })
 
-module.exports = listingSchema
+module.exports.reviewSchema = Joi.object({
+    rating: Joi.number()
+        .min(1)
+        .max(5)
+        .integer()
+        .required(),
+    comment: Joi.string()
+        .trim()
+        .min(2)
+        .required(),
+    // listing: Joi.string()
+    //     .pattern(/^[0-9a-fA-F]{24}$/)
+    //     .required()
+})
+
+module.exports.bookingSchema = Joi.object({
+    listing: Joi.string()
+        .pattern(/^[0-9a-fA-F]{24}$/)
+        .required(),
+    fromDate: Joi.date()
+        .min('now')
+        .required(),
+    toDate: Joi.date()
+        .greater(Joi.ref('fromDate'))
+        .required()
+})

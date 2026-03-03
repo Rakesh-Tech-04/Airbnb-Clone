@@ -1,28 +1,44 @@
 const Booking = require("../models/booking")
 const Listing = require("../models/listing")
-module.exports.booking = async (req, res) => {
-    let newBooking = new Booking(req.body)
-    await Listing.findByIdAndUpdate(newBooking.listing, { $set: { bookingStatus: true, booking: newBooking._id } })
+const ExpressError = require("../utils/ExpressError")
+
+module.exports.createBooking = async (req, res, next) => {
+    const { listing, fromDate, toDate } = req.body
+    let nights = (new Date(toDate) - new Date(fromDate)) / (24 * 60 * 60 * 1000)
+    let findListing = await Listing.findById(listing)
+    let totalPrice = (findListing.rent * nights) + (209 * 2)
+    let host = findListing.user
+
+    if (fromDate >= toDate) {
+        return next(new ExpressError(400, "Invalid date range"))
+    }
+    const existingBooking = await Booking.findOne({
+        listing,
+        status: "Booked",
+        fromDate: { $lte: toDate },
+        toDate: { $gte: fromDate },
+    });
+    if (existingBooking) {
+        return next(new ExpressError(400, "Selected dates are already booked"))
+    }
+
+    let newBooking = new Booking({
+        listing, fromDate, toDate, user: req.user.id, totalPrice, host, status: 'Booked'
+    })
     await newBooking.save()
     res.status(200).json(newBooking)
-}
-
-module.exports.allBooking = async (req, res) => {
-    let booking = await Booking.find({})
-    res.json(booking)
 }
 
 module.exports.renderBooking = async (req, res) => {
     let { bookingId } = req.params
     let booking = await Booking.findById(bookingId).populate({ path: 'host', select: 'email' })
-    res.json(booking)
+    res.status(200).json(booking)
 }
 
-module.exports.cancelBooking = async (req, res) => {
+module.exports.existingBookingDate = async (req, res) => {
     let { listingId } = req.params
-    console.log(listingId)
-    let listing = await Listing.findByIdAndUpdate(listingId, { $set: { bookingStatus: false, booking: null }})
-    console.log(listing)
-    await Booking.findByIdAndUpdate(listing.booking, { status: "Cancelled" })
-    res.json(listing)
+    let today = new Date()
+    today.setHours(0, 0, 0, 0);
+    let bookings = await Booking.find({ listing: listingId, fromDate: { $gte: today } }).select("fromDate toDate")
+    res.status(200).json(bookings)
 }

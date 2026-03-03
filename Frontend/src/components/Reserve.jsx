@@ -7,22 +7,17 @@ import { useEffect } from 'react';
 import { api } from '../util/axios';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../util/UserContext';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { toast } from 'react-toastify';
 
 export const Reserve = ({ handleClose, listing }) => {
     let navigate = useNavigate()
-    let [fromDate, setFromDate] = useState("")
-    let [price, setPrice] = useState({ nights: 0, totalPrice: 0 })
+    let [fromDate, setFromDate] = useState(null)
+    let [nights, setNights] = useState(0)
     let [toDate, setToDate] = useState("")
-    let { user, setUser } = useUser()
-    let InputField = styled('input')(({ theme }) => ({
-        fontSize: '1.3rem',
-        padding: '0.3rem 0.5rem',
-        border: '2px solid #ccc',
-        borderRadius: "5px",
-        width: '15rem',
-        marginBottom: '2rem',
-        marginRight: '4rem'
-    }))
+    let [existingBookingDates, setExistingBookingDates] = useState([])
+
     let Label = styled('p')({
         fontSize: '1.3rem',
         marginBlock: '0.5rem',
@@ -39,41 +34,40 @@ export const Reserve = ({ handleClose, listing }) => {
     })
 
     useEffect(() => {
-        if (fromDate && toDate) {
-            const start = new Date(fromDate);
-            const end = new Date(toDate);
-            if (end > start) {
-                let nights = (end - start) / (1000 * 60 * 60 * 24)
-                let totalPrice = (listing.rent * nights) + 209.93 + 209.93
-                setPrice({ nights: nights, totalPrice: totalPrice })
-            }
-            else {
-                setToDate('')
-                setPrice({ nights: 0, totalPrice: 0 })
-            }
-        }
-    }, [fromDate, toDate])
+        api.get(`/listing/${listing._id}/booking`)
+            .then(({ data }) => {
+                setExistingBookingDates(data)
+            })
+            .catch(({ response }) => {
+                toast.error(response.data.message)
+            })
+    }, [])
 
     const handleSubmit = (e) => {
         e.preventDefault()
         let data = {
-            user: user?.id,
             listing: listing._id,
             fromDate: fromDate,
             toDate: toDate,
-            totalPrice: price.totalPrice,
-            host: listing.user,
-            status: 'Booked'
         }
-        api.post('/booking', data).then(({ data }) => {
+        api.post(`/listing/${listing._id}/booking`, data).then(({ data }) => {
             navigate(`/booking/${data._id}`)
         })
     }
-    const getNextDay = (date) => {
-        const d = new Date(date);
-        d.setDate(d.getDate() + 1);
-        return d.toISOString().split("T")[0];
-    };
+    let maxToDate = null;
+
+    if (fromDate && existingBookingDates.length > 0) {
+
+        const futureBookings = existingBookingDates
+            .filter(b => new Date(b.fromDate) > fromDate)
+            .sort((a, b) => new Date(a.fromDate) - new Date(b.fromDate));
+
+        if (futureBookings.length > 0) {
+            maxToDate = new Date(futureBookings[0].fromDate);
+            maxToDate.setDate(maxToDate.getDate() - 1);
+        }
+    }
+
     return (
         <Box sx={{
             display: 'flex',
@@ -118,12 +112,34 @@ export const Reserve = ({ handleClose, listing }) => {
                         }}>Your Trip -</Box>
                         <InputWrapper>
                             <Label>CheckIn</Label>
-                            <InputField required value={fromDate} onChange={(e) => setFromDate(e.target.value)} type='date' min={new Date().toISOString().split("T")[0]} />
+
+                            <DatePicker
+                                minDate={new Date()}
+                                selected={fromDate}
+                                onChange={(e) => {
+                                    setFromDate(e)
+
+                                }}
+                                excludeDateIntervals={existingBookingDates?.map(date => ({ start: new Date(date.fromDate), end: new Date(date.toDate) }))}
+                            />
+
                         </InputWrapper>
                         <InputWrapper>
                             <Label>CheckOut</Label>
-                            <InputField required value={toDate} onChange={(e) => setToDate(e.target.value)
-                            } type='date' min={fromDate && getNextDay(fromDate)} />
+
+                            <DatePicker
+                                minDate={fromDate || new Date()}
+                                maxDate={maxToDate}
+                                selected={toDate}
+                                onChange={(e) => {
+                                    setToDate(e)
+                                    let nights = (e - fromDate) / (24 * 60 * 60 * 1000)
+                                    setNights(nights)
+                                }}
+                                disabled={!fromDate}
+                            // excludeDates={blockedDates}
+                            />
+
                         </InputWrapper>
                         <Box sx={{ textAlign: 'center', marginBottom: '3rem' }}>
                             <FunctionalityButton title={"Book Now"} />
@@ -158,8 +174,8 @@ export const Reserve = ({ handleClose, listing }) => {
                     }}>
                         <h2>Booking Price -</h2>
                         <BillWrapper>
-                            <h4>₹{listing.rent} X {price.nights} nights</h4>
-                            <p>{listing.rent * price.nights}</p>
+                            <h4>₹{listing.rent} X {nights} nights</h4>
+                            <p>{listing.rent * nights}</p>
                         </BillWrapper>
                         <BillWrapper>
                             <h4>Tax</h4>
@@ -174,7 +190,7 @@ export const Reserve = ({ handleClose, listing }) => {
                         }}>
                             <BillWrapper>
                                 <h4>Total Price</h4>
-                                <p>{price.totalPrice}</p>
+                                <p>{(listing.rent * nights) + (209 * 2)}</p>
                             </BillWrapper>
                         </Box>
                     </Box>

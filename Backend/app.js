@@ -7,6 +7,7 @@ const userRouter = require("./routes/user")
 const listingRouter = require('./routes/listing')
 const cookieParser = require('cookie-parser')
 const bookingRouter = require('./routes/booking')
+const reviewRouter = require('./routes/Review')
 mongoose.connect(process.env.MONGOURL)
     .then(() => { console.log("connect") })
 
@@ -21,7 +22,8 @@ app.use(express.urlencoded({ extended: true }))
 
 app.use("/api/v1/user", userRouter)
 app.use('/api/v1/listing', listingRouter)
-app.use('/api/v1/booking', bookingRouter)
+app.use('/api/v1/listing', bookingRouter)
+app.use('/api/v1/listing/:listingId/review', reviewRouter)
 
 app.use((err, req, res, next) => {
     // Mongoose CastError

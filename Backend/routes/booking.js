@@ -1,19 +1,18 @@
 const express = require("express")
 const { wrapAsync } = require("../middleware/wrapAsync")
-const { booking, allBooking, renderBooking, cancelBooking } = require("../controller/booking")
-const bookingRouter = express.Router()
+const { renderBooking, cancelBooking, existingBookingDate, createBooking } = require("../controller/booking")
+const { verifyToken } = require("../middleware/authentication")
+const { bookingValidation } = require("../middleware/joiValidation")
+const bookingRouter = express.Router({ mergeParams: true })
 
 bookingRouter
-    .route('/')
-    .get(wrapAsync(allBooking))
-    .post(wrapAsync(booking))
-    
-bookingRouter
-    .route('/cancelBooking/:listingId')
-    .get(wrapAsync(cancelBooking))
+    .route('/:listingId/booking')
+    .get(wrapAsync(existingBookingDate))
+    .post(verifyToken, bookingValidation, wrapAsync(createBooking))
 
 bookingRouter
-    .route("/:bookingId")
+    .route("/booking/:bookingId")
     .get(wrapAsync(renderBooking))
+
 
 module.exports = bookingRouter

@@ -1,8 +1,8 @@
-const listingSchema = require("../utils/joi")
+const { reviewSchema, bookingSchema } = require("../utils/joi")
 const ExpressError = require("../utils/ExpressError")
 
-const listingValidation = (req, res, next) => {
-    let { error } = listingSchema.validate(req.body, {
+module.exports.reviewValidation = (req, res, next) => {
+    let { error } = reviewSchema.validate(req.body, {
         abortEarly: false,
         allowUnknown: false
     })
@@ -15,4 +15,16 @@ const listingValidation = (req, res, next) => {
     }
 }
 
-module.exports = listingValidation
+module.exports.bookingValidation = (req, res, next) => {
+    let { error } = bookingSchema.validate(req.body, {
+        abortEarly: false,
+        allowUnknown: false
+    })
+    if (error) {
+        let errmsg = error.details.map((el) => el.message).join(', ');
+        return next(new ExpressError(400, errmsg))
+    }
+    else {
+        next()
+    }
+}

@@ -109,7 +109,7 @@ export const Listing = () => {
             }}>
                 {allListing.map((listing, i) =>
                     <Card key={listing._id} sx={{ maxWidth: 345, position: 'relative' }}>
-                        {listing.bookingStatus ?
+                        {/* {listing.bookingStatus ?
                             <Box sx={{ position: 'absolute', zIndex: 100, right: 10, top: 10, backgroundColor: "white", padding: '0.4rem 0.4rem', borderRadius: '4px', color: 'green', display: 'flex', alignItems: 'center', gap: '1px' }}><CheckCircleOutlineIcon sx={{ fontSize: '1.2rem' }} /> Booked </Box> : null}
                         {listing.bookingStatus && listing.user === user?.id ? <>
                             <Box sx={{ position: 'absolute', zIndex: 100, right: 10, top: 50, backgroundColor: "white", padding: '0.4rem 0.4rem', borderRadius: '4px', color: "red", display: 'flex', alignItems: 'center', gap: '1px', cursor: "pointer" }} onClick={() => handleBookingCancel(i)}><BlockIcon sx={{ fontSize: '1.2rem' }} />Cancel Booking</Box>
@@ -126,7 +126,7 @@ export const Listing = () => {
                                     <button style={{ color: 'white', backgroundColor: 'red', border: 'none', outline: 'none', fontSize: "1.1rem", margin: '0.2rem', padding: '0.2rem 0.7rem', borderRadius: '6px', cursor: 'pointer' }} onClick={handleBookingCancel}>
                                         No</button>
                                 </Box>
-                            </Box> : ""} </> : null}
+                            </Box> : ""} </> : null} */}
 
                         <Swiper
                             modules={Pagination}
