@@ -24,9 +24,14 @@ export const Reserve = ({ handleClose, listing }) => {
         marginInline: '3rem 0.5rem',
         width: '6rem'
     })
-    let InputWrapper = styled('div')({
-        display: 'flex'
-    })
+    let InputWrapper = styled('div')(({ theme }) => ({
+        display: 'flex',
+        alignItems: 'center',
+        // [theme.breakpoints.down("md")]: {
+        //     // width: '80vw'
+        // },
+    }))
+
     let BillWrapper = styled('div')({
         display: 'flex',
         justifyContent: 'space-between',
@@ -69,133 +74,143 @@ export const Reserve = ({ handleClose, listing }) => {
     }
 
     return (
-        <Box sx={{
-            display: 'flex',
-            alignItems: 'start',
-            marginBlock: '2rem',
-            marginInline: '0.8rem',
-        }}>
+        <>
             <CloseIcon onClick={handleClose} sx={{
                 background: 'red',
                 borderRadius: '50%',
                 width: "35px",
                 height: "35px",
-                padding: '4px',
+                margin: '1rem',
                 cursor: 'pointer',
             }} />
             <Box sx={{
-
-                display: "flex",
-                gap: 4,
-                flexGrow: 1,
-                justifyContent: 'center',
-                alignItems: "center",
-                height: '100vh',
+                display: 'flex',
+                alignItems: 'start',
+                // marginBlock: '2rem',
+                marginInline: '0.8rem',
             }}>
                 <Box sx={{
-                    backgroundColor: 'white',
-                    padding: '0.4rem 0.8rem',
-                    borderRadius: '10px'
-                }}>
-                    <form onSubmit={handleSubmit}>
-                        <Box sx={{
-                            fontSize: '1.6rem',
-                            borderBottom: '2px solid #ccc',
-                            textAlign: 'center',
-                            marginBlock: '1rem',
-                            paddingBottom: '0.4rem'
-                        }}>Confirm & Book</Box>
-                        <Box sx={{
-                            fontSize: '1.2rem',
-                            fontWeight: "600",
-                            marginBottom: '0.4rem'
-                        }}>Your Trip -</Box>
-                        <InputWrapper>
-                            <Label>CheckIn</Label>
-
-                            <DatePicker
-                                minDate={new Date()}
-                                selected={fromDate}
-                                onChange={(e) => {
-                                    setFromDate(e)
-
-                                }}
-                                excludeDateIntervals={existingBookingDates?.map(date => ({ start: new Date(date.fromDate), end: new Date(date.toDate) }))}
-                            />
-
-                        </InputWrapper>
-                        <InputWrapper>
-                            <Label>CheckOut</Label>
-
-                            <DatePicker
-                                minDate={fromDate || new Date()}
-                                maxDate={maxToDate}
-                                selected={toDate}
-                                onChange={(e) => {
-                                    setToDate(e)
-                                    let nights = (e - fromDate) / (24 * 60 * 60 * 1000)
-                                    setNights(nights)
-                                }}
-                                disabled={!fromDate}
-                            // excludeDates={blockedDates}
-                            />
-
-                        </InputWrapper>
-                        <Box sx={{ textAlign: 'center', marginBottom: '3rem' }}>
-                            <FunctionalityButton title={"Book Now"} />
-                        </Box>
-                    </form>
-                </Box>
-                <Box sx={{
-                    backgroundColor: 'white',
-                    padding: '2rem 1.5rem',
-                    borderRadius: '10px'
+                    display: { lg: "flex" },
+                    gap: 4,
+                    flexGrow: 1,
+                    justifyContent: 'center',
+                    alignItems: "center",
+                    // height: '100vh',
                 }}>
                     <Box sx={{
-                        display: 'flex', border: '2px solid #cccc',
-                        padding: '0.5rem',
-                        borderRadius: '8px',
-                        gap: 2,
-                        width: '22rem'
+                        backgroundColor: 'white',
+                        padding: '0.4rem 0.8rem',
+                        borderRadius: '10px',
+                        marginBottom: { xs: '1rem', lg: 0 },
+                        width: { xs: '95vw', lg: 'auto' },
+                        // overflow:'hidden'
+
                     }}>
-                        <Box ><img style={{
-                            borderRadius: '4px'
-                        }} src={listing.image[0].url} height={"90px"} width={"90px"} alt="err" /></Box>
-                        <Box>
-                            <Box sx={{ textWrap: 'wrap' }}>{listing.title}</Box>
-                        </Box>
+                        <form onSubmit={handleSubmit}>
+                            <Box sx={{
+                                fontSize: '1.6rem',
+                                borderBottom: '2px solid #ccc',
+                                textAlign: 'center',
+                                marginBlock: '1rem',
+                                paddingBottom: '0.4rem'
+                            }}>Confirm & Book</Box>
+                            <Box sx={{
+                                fontSize: '1.2rem',
+                                fontWeight: "600",
+                                marginBottom: '0.4rem'
+                            }}>Your Trip -</Box>
+                            <InputWrapper>
+                                <Label>CheckIn</Label>
+
+                                <DatePicker
+                                    minDate={new Date()}
+                                    selected={fromDate}
+                                    onChange={(e) => {
+                                        setFromDate(e)
+
+                                    }}
+                                    excludeDateIntervals={existingBookingDates?.map(date => ({ start: new Date(date.fromDate), end: new Date(date.toDate) }))}
+                                />
+
+                            </InputWrapper>
+                            <InputWrapper>
+                                <Label>CheckOut</Label>
+
+                                <DatePicker
+                                    minDate={fromDate || new Date()}
+                                    maxDate={maxToDate}
+                                    selected={toDate}
+                                    onChange={(e) => {
+                                        setToDate(e)
+                                        let nights = (e - fromDate) / (24 * 60 * 60 * 1000)
+                                        setNights(nights)
+                                    }}
+                                    disabled={!fromDate}
+                                // excludeDates={blockedDates}
+                                />
+
+                            </InputWrapper>
+                            <Box sx={{ textAlign: 'center', marginBottom: '3rem' }}>
+                                <FunctionalityButton title={"Book Now"} />
+                            </Box>
+                        </form>
                     </Box>
                     <Box sx={{
-                        marginTop: '0.8rem',
-                        border: '2px solid #cccc',
-                        padding: '0.5rem 0.8rem',
-                        borderRadius: '8px',
-                        width: '22rem'
+                        display:'grid',
+                        backgroundColor: 'white',
+                        padding: '2rem 1.5rem',
+                        borderRadius: '10px',
+                        width: { xs: '95vw', lg: 'auto' },
+                        placeContent:{xs:'center',lg:'normal'}
                     }}>
-                        <h2>Booking Price -</h2>
-                        <BillWrapper>
-                            <h4>₹{listing.rent} X {nights} nights</h4>
-                            <p>{listing.rent * nights}</p>
-                        </BillWrapper>
-                        <BillWrapper>
-                            <h4>Tax</h4>
-                            <p>209.93</p>
-                        </BillWrapper>
-                        <BillWrapper>
-                            <h4>Airbnb Charge</h4>
-                            <p>209.93</p>
-                        </BillWrapper>
                         <Box sx={{
-                            borderTop: '2px solid #ccc'
+                            display: 'flex',
+                            border: '2px solid #cccc',
+                            padding: '0.5rem',
+                            borderRadius: '8px',
+                            gap: 2,
+                            width: '22rem',
+                            
                         }}>
+                            <Box ><img style={{
+                                borderRadius: '4px'
+                            }} src={listing.image[0]?.url} height={"90px"} width={"90px"} alt="err" /></Box>
+                            <Box>
+                                <Box sx={{ textWrap: 'wrap' }}>{listing.title}</Box>
+                            </Box>
+                        </Box>
+                        <Box sx={{
+                            marginTop: '0.8rem',
+                            border: '2px solid #cccc',
+                            padding: '0.5rem 0.8rem',
+                            borderRadius: '8px',
+                            width: '22rem'
+                        }}>
+                            <h2>Booking Price -</h2>
                             <BillWrapper>
-                                <h4>Total Price</h4>
-                                <p>{(listing.rent * nights) + (209 * 2)}</p>
+                                <h4>₹{listing.rent} X {nights} nights</h4>
+                                <p>{listing.rent * nights}</p>
                             </BillWrapper>
+                            <BillWrapper>
+                                <h4>Tax</h4>
+                                <p>209.93</p>
+                            </BillWrapper>
+                            <BillWrapper>
+                                <h4>Airbnb Charge</h4>
+                                <p>209.93</p>
+                            </BillWrapper>
+                            <Box sx={{
+                                borderTop: '2px solid #ccc'
+                            }}>
+                                <BillWrapper>
+                                    <h4>Total Price</h4>
+                                    <p>{(listing.rent * nights) + (209 * 2)}</p>
+                                </BillWrapper>
+                            </Box>
                         </Box>
                     </Box>
                 </Box>
-            </Box>
-        </Box >
+            </Box >
+        </>
     )
 }

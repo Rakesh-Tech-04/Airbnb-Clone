@@ -1,4 +1,5 @@
 const mongoose = require("mongoose")
+
 const bookingSchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
@@ -33,6 +34,9 @@ const bookingSchema = new mongoose.Schema({
         enum: ['Booked', 'Cancelled', 'Pending']
     }
 }, { timestamps: true });
+
+bookingSchema.index({ user: 1, _id: -1 })
+
 
 const Booking = mongoose.model("Booking", bookingSchema);
 module.exports = Booking

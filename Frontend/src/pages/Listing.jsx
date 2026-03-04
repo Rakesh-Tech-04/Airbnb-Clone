@@ -20,21 +20,55 @@ import BedIcon from '@mui/icons-material/Bed';
 import BedroomParentIcon from '@mui/icons-material/BedroomParent';
 import WhatshotIcon from '@mui/icons-material/Whatshot';
 import StoreIcon from '@mui/icons-material/Store';
-import BlockIcon from '@mui/icons-material/Block';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import { useUser } from "../util/UserContext";
+
+import { toast } from "react-toastify";
+import { useRef } from "react";
 
 export const Listing = () => {
     let navigation = useNavigate()
-    let { user, setUser } = useUser()
     let [allListing, setAllListing] = useState([])
-    let [showCancelBooking, setShowCancelBooking] = useState(false)
-    let [index, setIndex] = useState(null)
+    const [loading, setLoading] = useState(false);
+    const [hasMore, setHasMore] = useState(true);
+    
+    const loadingRef = useRef(false);
+
+    const fetchListings = async () => {
+        if (loadingRef.current || !hasMore) return;
+        loadingRef.current = true
+
+        let lastId = null;
+        if (allListing.length > 0) {
+            lastId = allListing[allListing.length - 1]._id;
+        }
+        api.get("/listing", { params: { lastId } })
+            .then(({ data }) => {
+                setAllListing(prev => [...prev, ...data.allListing]);
+                setHasMore(data.hasMore);
+            })
+            .catch((response) => { toast.error(response.data) })
+            .finally(() => {
+                loadingRef.current = false;
+            })
+    };
+
     useEffect(() => {
-        api.get("/listing").then(({ data }) => {
-            setAllListing(data)
-        }).catch((err) => { console.log(err) })
+        fetchListings()
     }, [])
+
+    useEffect(() => {
+        const handleScroll = () => {
+            if (
+                window.innerHeight + document.documentElement.scrollTop
+                >= document.documentElement.scrollHeight - 5
+            ) {
+                fetchListings();
+            }
+        };
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, [allListing, hasMore]);
+
+
     let [icons, setIcons] = useState([
         { name: 'Trending', active: true, iconName: WhatshotIcon },
         { name: 'Villa', active: false, iconName: VillaIcon },
@@ -56,22 +90,14 @@ export const Listing = () => {
 
     const handleSearchIcon = async (e) => {
         const p = e.currentTarget.querySelector("p").textContent
-        api.get(`/listing/searchListing?search=${p}`).then(({ data }) => {
-            setAllListing(data)
-            setIcons(prev => prev.map(obj => (
-                obj.name === p ? { ...obj, active: true } : { ...obj, active: false }
-            ))).catch((err) => { console.log(err) })
-        })
-    }
-    const handleBookingCancel = (i) => {
-        setShowCancelBooking(prev => !prev)
-        setIndex(prev => prev ? null : i)
-    }
-    const handleBookingCancelYes = (listingId) => {
-        api.get(`/booking/cancelBooking/${listingId}`).then(({ data }) => {
-            console.log(data)
-        }).catch((err) => { console.log(err) })
-        handleBookingCancel()
+        api.get(`/listing/searchListing?search=${p}`)
+            .then(({ data }) => {
+                setAllListing(data)
+                setIcons(prev => prev.map(obj => (
+                    obj.name === p ? { ...obj, active: true } : { ...obj, active: false }
+                )))
+                    .catch((err) => { console.log(err) })
+            })
     }
     return (
         <>
@@ -109,24 +135,6 @@ export const Listing = () => {
             }}>
                 {allListing.map((listing, i) =>
                     <Card key={listing._id} sx={{ maxWidth: 345, position: 'relative' }}>
-                        {/* {listing.bookingStatus ?
-                            <Box sx={{ position: 'absolute', zIndex: 100, right: 10, top: 10, backgroundColor: "white", padding: '0.4rem 0.4rem', borderRadius: '4px', color: 'green', display: 'flex', alignItems: 'center', gap: '1px' }}><CheckCircleOutlineIcon sx={{ fontSize: '1.2rem' }} /> Booked </Box> : null}
-                        {listing.bookingStatus && listing.user === user?.id ? <>
-                            <Box sx={{ position: 'absolute', zIndex: 100, right: 10, top: 50, backgroundColor: "white", padding: '0.4rem 0.4rem', borderRadius: '4px', color: "red", display: 'flex', alignItems: 'center', gap: '1px', cursor: "pointer" }} onClick={() => handleBookingCancel(i)}><BlockIcon sx={{ fontSize: '1.2rem' }} />Cancel Booking</Box>
-
-                            {i === index && showCancelBooking ? <Box sx={{ backgroundColor: '#fffafaea', width: '90%', height: '33%', position: 'absolute', zIndex: 100, top: '25%', left: '5%', borderRadius: '10px', textAlign: 'center', paddingBlock: '1rem' }}>
-                                <Box sx={{
-                                    fontSize: "1.3rem"
-                                }}>
-                                    Booking Cancel!
-                                </Box>
-                                <Box sx={{ color: 'red', fontSize: "1.2rem" }}>
-                                    Are You Sure?
-                                    <button style={{ color: 'white', backgroundColor: 'red', border: 'none', outline: 'none', fontSize: "1.1rem", margin: '0.3rem', padding: '0.2rem 0.7rem', borderRadius: '6px', cursor: 'pointer' }} onClick={() => handleBookingCancelYes(listing._id)}>Yes</button>
-                                    <button style={{ color: 'white', backgroundColor: 'red', border: 'none', outline: 'none', fontSize: "1.1rem", margin: '0.2rem', padding: '0.2rem 0.7rem', borderRadius: '6px', cursor: 'pointer' }} onClick={handleBookingCancel}>
-                                        No</button>
-                                </Box>
-                            </Box> : ""} </> : null} */}
 
                         <Swiper
                             modules={Pagination}

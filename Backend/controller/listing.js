@@ -1,3 +1,4 @@
+const { default: mongoose } = require("mongoose")
 const Listing = require("../models/listing")
 const Review = require("../models/review")
 const { uploadInCloudinary, cloudinary } = require("../utils/cloudinary")
@@ -5,8 +6,20 @@ const ExpressError = require('../utils/ExpressError')
 const { listingSchema } = require("../utils/joi")
 
 module.exports.renderListing = async (req, res) => {
-    let allListing = await Listing.find({}).sort({ createdAt: -1 })
-    res.status(200).json(allListing)
+    let lastId = req.query.lastId
+    let query = {}
+
+    if (lastId) {
+        query._id = { $lt: new mongoose.Types.ObjectId(lastId) }
+    }
+
+    let allListing = await Listing.find(query).sort({ _id: -1 }).limit(13)
+
+    let hasMore = allListing.length > 12
+    if (hasMore) {
+        allListing.pop()
+    }
+    res.status(200).json({ hasMore, allListing })
 }
 
 module.exports.selectedListing = async (req, res) => {
@@ -93,7 +106,18 @@ module.exports.searchListing = async (req, res) => {
 }
 
 module.exports.myListing = async (req, res) => {
-    let { userId } = req.params
-    let MyListing = await Listing.find({ user: userId }).sort({ createdAt: -1 })
-    res.json(MyListing)
+    let lastId = req.query.lastId
+    let query = { user: req.user.id }
+
+    if (lastId) {
+        query._id = { $lt: new mongoose.Types.ObjectId(lastId) }
+    }
+
+    let allListing = await Listing.find(query).sort({ _id: -1 }).limit(13)
+
+    let hasMore = allListing.length > 12
+    if (hasMore) {
+        allListing.pop()
+    }
+    res.status(200).json({ hasMore, allListing })
 }

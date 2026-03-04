@@ -1,5 +1,5 @@
 import Box from "@mui/material/Box"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { api } from "../util/axios"
 import Card from '@mui/material/Card';
@@ -15,15 +15,42 @@ import { toast } from 'react-toastify';
 export const MyListing = () => {
     let navigate = useNavigate()
     let [allListing, setAllListing] = useState([])
-    let param = useParams()
-    useEffect(() => {
-        console.log(param.userId)
-        api.get(`/listing/mylisting/${param.userId}`).then(({ data }) => {
-            setAllListing(data)
-        }).catch(({ response }) => {
-            toast.error(response.data.message)
+    let [hasMore, setHasMore] = useState(true)
+    let loadingRef = useRef(false)
+    
+    const fetchListings = async () => {
+        if (loadingRef.current || !hasMore) return
+        loadingRef.current = true
+        let lastId = null;
+        if (allListing.length > 0) {
+            lastId = allListing[allListing.length - 1]._id;
+        }
+        api.get(`/listing/mylisting`, { params: { lastId } }).then(({ data }) => {
+            setAllListing(prev => [...prev, ...data.allListing]);
+            setHasMore(data.hasMore);
         })
+            .catch((response) => { toast.error(response.data) })
+            .finally(() => {
+                loadingRef.current = false;
+            })
+    }
+    useEffect(() => {
+        fetchListings()
     }, [])
+    
+    useEffect(() => {
+        const handleScroll = () => {
+            if (
+                window.innerHeight + document.documentElement.scrollTop
+                >= document.documentElement.scrollHeight - 5
+            ) {
+                fetchListings();
+            }
+        };
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, [allListing, hasMore]);
+
     const goToListing = (listingId) => {
         navigate(`/listing/${listingId}`)
     }
@@ -98,7 +125,7 @@ export const MyListing = () => {
                     </Card>
                 )}
             </Box>
-            
+
         </>
     )
 }

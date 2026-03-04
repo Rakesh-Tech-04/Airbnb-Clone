@@ -1,3 +1,4 @@
+const { default: mongoose } = require("mongoose")
 const Booking = require("../models/booking")
 const Listing = require("../models/listing")
 const ExpressError = require("../utils/ExpressError")
@@ -41,4 +42,22 @@ module.exports.existingBookingDate = async (req, res) => {
     today.setHours(0, 0, 0, 0);
     let bookings = await Booking.find({ listing: listingId, fromDate: { $gte: today } }).select("fromDate toDate")
     res.status(200).json(bookings)
+}
+
+module.exports.renderMyBooking = async (req, res) => {
+    let lastId = req.query.lastId
+
+    let query = { user: req.user.id }
+    if (lastId) {
+        query._id = { $lt: new mongoose.Types.ObjectId(lastId) }
+    }
+
+    let allBooking = await Booking.find(query).sort({ _id: -1 }).limit(11).select('fromDate toDate listing totalPrice status').populate("listing", "title image")
+
+    let hasMore = allBooking.length > 10
+    if (hasMore) {
+        allBooking.pop()
+    }
+
+    res.status(200).json({ hasMore, allBooking })
 }

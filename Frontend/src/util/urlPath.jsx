@@ -9,6 +9,7 @@ import { Page3 } from "../pages/Page3";
 import { Authentication } from "../pages/Authentication";
 import { BookingConfirmation } from "../pages/BookingConfirmation";
 import { MyListing } from "../pages/MyListing";
+import { MyBooking } from "../pages/MyBooking";
 
 export const router = createBrowserRouter([{
     path: "/",
@@ -41,7 +42,7 @@ export const router = createBrowserRouter([{
             element: <Authentication />
         },
         {
-            path: '/mylisting/:userId',
+            path: '/mylisting',
             element: <MyListing />
         },
         {
@@ -51,6 +52,10 @@ export const router = createBrowserRouter([{
         {
             path: '/booking/:bookingId',
             element: <BookingConfirmation />
+        },
+        {
+            path: '/myBooking',
+            element: <MyBooking />
         }
 
     ]

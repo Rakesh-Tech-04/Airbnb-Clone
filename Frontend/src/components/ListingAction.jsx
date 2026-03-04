@@ -1,5 +1,5 @@
 import Button from '@mui/material/Button';
-import Modal from '@mui/material/Modal';
+import Dialog from '@mui/material/Modal';
 import * as React from 'react';
 import { useEffect } from 'react';
 import { api } from '../util/axios';
@@ -35,10 +35,10 @@ export const ListingAction = ({ listing, setListing }) => {
                 borderRadius: '8px',
                 cursor: 'pointer'
             }} onClick={handleOpen}>{listing.user === user?.id ? "Edit Listing" : "Reserve"}</Button>
-            <Modal
+            <Dialog
                 open={open}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
+                // aria-labelledby="modal-modal-title"
+                // aria-describedby="modal-modal-description"
             >
                 {
                     listing.user === user?.id ?
@@ -46,7 +46,7 @@ export const ListingAction = ({ listing, setListing }) => {
                         :
                         <Reserve handleClose={handleClose} listing={listing} />
                 }
-            </Modal>
+            </Dialog>
         </div>
     )
 }

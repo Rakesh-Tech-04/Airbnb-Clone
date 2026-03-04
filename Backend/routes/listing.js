@@ -12,7 +12,7 @@ listingRouter
 
 listingRouter.get('/searchListing', wrapAsync(searchListing))
 
-listingRouter.get('/mylisting/:userId', wrapAsync(myListing))
+listingRouter.get( '/mylisting',verifyToken, wrapAsync(myListing))
 
 listingRouter
     .route('/:listingId')

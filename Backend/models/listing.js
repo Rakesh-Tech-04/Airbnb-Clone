@@ -43,8 +43,8 @@ const listingSchema = new mongoose.Schema({
     timestamps: true
 })
 
-listingSchema.index({ user: 1, createdAt: -1 })
-listingSchema.index({ describe: 1, createdAt: -1 })
+listingSchema.index({ user: 1, _id: -1 })
+// listingSchema.index({ describe: 1, createdAt: -1 })
 
 const Listing = mongoose.model("Listing", listingSchema)
 

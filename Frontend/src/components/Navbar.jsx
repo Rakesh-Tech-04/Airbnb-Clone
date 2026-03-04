@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { styled, alpha } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -151,10 +151,10 @@ export const Navbar = () => {
             <NavLink to={'/listing/addListing/page1'} style={styleLinks}>
                 <MenuItem sx={styleMenuItem} onClick={handleMenuClose}>List Your Home </MenuItem>
             </NavLink>
-            <NavLink to={`/mylisting/${user?.id}`} style={styleLinks}>
+            <NavLink to={`/mylisting`} style={styleLinks}>
                 <MenuItem sx={styleMenuItem} onClick={handleMenuClose}>My Listing</MenuItem>
             </NavLink>
-            <NavLink style={styleLinks}>
+            <NavLink to={'/myBooking'} style={styleLinks}>
                 <MenuItem sx={styleMenuItem} onClick={handleMenuClose}>My Booking</MenuItem>
             </NavLink>
         </Menu>
