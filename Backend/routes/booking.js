@@ -6,15 +6,15 @@ const { bookingValidation } = require("../middleware/joiValidation")
 const bookingRouter = express.Router({ mergeParams: true })
 
 bookingRouter
-    .route('/booking/myBooking')
+    .route('/myBooking')
     .get(verifyToken, wrapAsync(renderMyBooking))
 
 bookingRouter
-    .route("/booking/:bookingId")
+    .route("/:bookingId")
     .get(wrapAsync(renderBooking))
 
 bookingRouter
-    .route('/:listingId/booking')
+    .route('/:listingId')
     .get(wrapAsync(existingBookingDate))
     .post(verifyToken, bookingValidation, wrapAsync(createBooking))
 

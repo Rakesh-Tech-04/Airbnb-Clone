@@ -28,22 +28,31 @@ export const Listing = () => {
     let navigation = useNavigate()
     let [allListing, setAllListing] = useState([])
     const [loading, setLoading] = useState(false);
-    const [hasMore, setHasMore] = useState(true);
-    
+    const [searchDescribe, setSearchDescribe] = useState(null)
     const loadingRef = useRef(false);
 
-    const fetchListings = async () => {
-        if (loadingRef.current || !hasMore) return;
+    const fetchListings = async (e) => {
+        if (loadingRef.current) return;
         loadingRef.current = true
-
         let lastId = null;
+        let p = searchDescribe
         if (allListing.length > 0) {
             lastId = allListing[allListing.length - 1]._id;
         }
-        api.get("/listing", { params: { lastId } })
+        if (e) {
+            p = e.currentTarget.querySelector("p").textContent
+            console.log(p)
+            setAllListing([])
+            setSearchDescribe(p)
+            lastId = null
+            setIcons(prev => prev.map(obj => (
+                obj.name === p ? { ...obj, active: true } : { ...obj, active: false }
+            )))
+        }
+
+        api.get("/listing", { params: { lastId, p } })
             .then(({ data }) => {
                 setAllListing(prev => [...prev, ...data.allListing]);
-                setHasMore(data.hasMore);
             })
             .catch((response) => { toast.error(response.data) })
             .finally(() => {
@@ -66,7 +75,7 @@ export const Listing = () => {
         };
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
-    }, [allListing, hasMore]);
+    }, [allListing]);
 
 
     let [icons, setIcons] = useState([
@@ -88,17 +97,6 @@ export const Listing = () => {
         fontSize: '2rem',
     }
 
-    const handleSearchIcon = async (e) => {
-        const p = e.currentTarget.querySelector("p").textContent
-        api.get(`/listing/searchListing?search=${p}`)
-            .then(({ data }) => {
-                setAllListing(data)
-                setIcons(prev => prev.map(obj => (
-                    obj.name === p ? { ...obj, active: true } : { ...obj, active: false }
-                )))
-                    .catch((err) => { console.log(err) })
-            })
-    }
     return (
         <>
             <Navbar />
@@ -121,7 +119,7 @@ export const Listing = () => {
                             borderBottom: '4px solid #ddddddcc',
                             transition: 'border-bottom 0.3s ease-in'
                         }
-                    }} onClick={handleSearchIcon}>
+                    }} onClick={fetchListings}>
                         <icon.iconName sx={iconStyle} />
                         <p>{icon.name}</p>
                     </Box>

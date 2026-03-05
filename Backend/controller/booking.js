@@ -30,11 +30,11 @@ module.exports.createBooking = async (req, res, next) => {
     res.status(200).json(newBooking)
 }
 
-module.exports.renderBooking = async (req, res) => {
-    let { bookingId } = req.params
-    let booking = await Booking.findById(bookingId).populate({ path: 'host', select: 'email' })
-    res.status(200).json(booking)
-}
+// module.exports.renderBooking = async (req, res) => {
+//     let { bookingId } = req.params
+//     let booking = await Booking.findById(bookingId).populate({ path: 'host', select: 'email' })
+//     res.status(200).json(booking)
+// }
 
 module.exports.existingBookingDate = async (req, res) => {
     let { listingId } = req.params

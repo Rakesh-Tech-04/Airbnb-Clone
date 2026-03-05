@@ -39,7 +39,7 @@ export const Reserve = ({ handleClose, listing }) => {
     })
 
     useEffect(() => {
-        api.get(`/listing/${listing._id}/booking`)
+        api.get(`/listing/booking/${listing._id}`)
             .then(({ data }) => {
                 setExistingBookingDates(data)
             })
@@ -55,7 +55,7 @@ export const Reserve = ({ handleClose, listing }) => {
             fromDate: fromDate,
             toDate: toDate,
         }
-        api.post(`/listing/${listing._id}/booking`, data).then(({ data }) => {
+        api.post(`/listing/booking/${listing._id}`, data).then(({ data }) => {
             navigate(`/booking/${data._id}`)
         })
     }
@@ -156,12 +156,12 @@ export const Reserve = ({ handleClose, listing }) => {
                         </form>
                     </Box>
                     <Box sx={{
-                        display:'grid',
+                        display: 'grid',
                         backgroundColor: 'white',
                         padding: '2rem 1.5rem',
                         borderRadius: '10px',
                         width: { xs: '95vw', lg: 'auto' },
-                        placeContent:{xs:'center',lg:'normal'}
+                        placeContent: { xs: 'center', lg: 'normal' }
                     }}>
                         <Box sx={{
                             display: 'flex',
@@ -170,7 +170,7 @@ export const Reserve = ({ handleClose, listing }) => {
                             borderRadius: '8px',
                             gap: 2,
                             width: '22rem',
-                            
+
                         }}>
                             <Box ><img style={{
                                 borderRadius: '4px'

@@ -20,11 +20,13 @@ export const MyBooking = () => {
         }
         api.get(`/listing/booking/myBooking`, { params: { lastId } })
             .then(({ data }) => {
-                console.log(data.allBooking)
                 setAllBooking(prev => [...prev, ...data.allBooking])
                 setHasMore(hasMore)
             })
             .catch(({ response }) => {
+                if (response.status === 401) {
+                    navigate('/user/authentication')
+                }
                 toast.error(response.data.message)
             })
             .finally(() => {
@@ -63,8 +65,8 @@ export const MyBooking = () => {
                     textDecoration: 'none',
                     color: 'black'
                 }}>
-                    <img src={booking.listing.image[0].url} height={110} onClick={()=>{navigate(`/listing/${booking.listing._id}`)}}/>
-                    <Container onClick={()=>{navigate(`/booking/${booking._id}`)}} sx={{
+                    <img src={booking.listing.image[0].url} height={110} onClick={() => { navigate(`/listing/${booking.listing._id}`) }} />
+                    <Container onClick={() => { navigate(`/booking/${booking._id}`) }} sx={{
                         display: 'grid',
                         alignItems: 'center'
                     }}>

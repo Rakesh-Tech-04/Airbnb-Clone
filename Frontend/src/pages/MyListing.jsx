@@ -17,7 +17,7 @@ export const MyListing = () => {
     let [allListing, setAllListing] = useState([])
     let [hasMore, setHasMore] = useState(true)
     let loadingRef = useRef(false)
-    
+
     const fetchListings = async () => {
         if (loadingRef.current || !hasMore) return
         loadingRef.current = true
@@ -29,7 +29,12 @@ export const MyListing = () => {
             setAllListing(prev => [...prev, ...data.allListing]);
             setHasMore(data.hasMore);
         })
-            .catch((response) => { toast.error(response.data) })
+            .catch(({response}) => { 
+                toast.error(response.data.message) 
+                if(response.status === 401){
+                    navigate(`/user/authentication`)
+                }
+            })
             .finally(() => {
                 loadingRef.current = false;
             })
@@ -37,7 +42,7 @@ export const MyListing = () => {
     useEffect(() => {
         fetchListings()
     }, [])
-    
+
     useEffect(() => {
         const handleScroll = () => {
             if (

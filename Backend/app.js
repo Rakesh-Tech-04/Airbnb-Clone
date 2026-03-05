@@ -22,7 +22,7 @@ app.use(express.urlencoded({ extended: true }))
 
 app.use("/api/v1/user", userRouter)
 app.use('/api/v1/listing', listingRouter)
-app.use('/api/v1/listing', bookingRouter)
+app.use('/api/v1/listing/booking', bookingRouter)
 app.use('/api/v1/listing/:listingId/review', reviewRouter)
 
 app.use((err, req, res, next) => {

@@ -7,19 +7,29 @@ const { listingSchema } = require("../utils/joi")
 
 module.exports.renderListing = async (req, res) => {
     let lastId = req.query.lastId
+    let p = req.query.p
     let query = {}
 
     if (lastId) {
         query._id = { $lt: new mongoose.Types.ObjectId(lastId) }
     }
+    if (p) {
+        if (p === 'Trending') {
+            query = {}
+        }
+        else {
+            query.describe = p
+        }
 
-    let allListing = await Listing.find(query).sort({ _id: -1 }).limit(13)
-
-    let hasMore = allListing.length > 12
-    if (hasMore) {
-        allListing.pop()
     }
-    res.status(200).json({ hasMore, allListing })
+
+    let allListing = await Listing.find(query).sort({ _id: -1 }).limit(12)
+    // let hasMore = allListing.length > 12
+    // if (hasMore) {
+    //     allListing.pop()
+    // }
+    // console.log(allListing)
+    res.status(200).json({ allListing })
 }
 
 module.exports.selectedListing = async (req, res) => {
@@ -98,7 +108,7 @@ module.exports.searchListing = async (req, res) => {
             $or: [
                 { city: { $regex: search, $options: 'i' } },
                 { landmark: { $regex: search, $options: 'i' } },
-                { describe: { $regex: search, $options: 'i' } },
+                // { describe: { $regex: search, $options: 'i' } },
             ]
         })
         res.json(listing)

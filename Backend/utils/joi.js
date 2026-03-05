@@ -33,8 +33,7 @@ module.exports.listingSchema = Joi.object({
             })
         )
         .required(),
-    describe: Joi.array()
-        .items(Joi.string())
+    describe: Joi.string()
         .optional()
 })
 

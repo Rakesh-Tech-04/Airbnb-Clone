@@ -33,7 +33,7 @@ export const Page2 = () => {
             ...describe,
             border: !value.includes(describe.name)
         })))
-        
+
     }, [])
     const iconStyle = {
         fontSize: '2rem',
@@ -45,15 +45,18 @@ export const Page2 = () => {
                 ...describe,
                 border: !describe.border
             }
-            : describe))
+            : {
+                ...describe,
+                border: true
+            }))
     }
     const handleClick = () => {
-        let describe = describes.reduce((arr, item) => {
-            if (!item.border) arr.push(item.name)
-            return arr
-        }, [])
-        setValue("describe", describe)
-        navigate('/listing/addListing/page3')
+        describes.forEach((item) => {
+            if (!item.border) {
+                setValue("describe", item.name)
+                navigate('/listing/addListing/page3')
+            }
+        })
     }
     return (
         <Box>
@@ -98,8 +101,8 @@ export const Page2 = () => {
             </Box>
             <Box sx={{
                 position: 'fixed',
-                right: {xs:10,sm:20,md:40},
-                bottom: {xs:10,md:10},
+                right: { xs: 10, sm: 20, md: 40 },
+                bottom: { xs: 10, md: 10 },
             }}>
                 <FunctionalityButton title={"Next"} onClick={handleClick} />
             </Box>
