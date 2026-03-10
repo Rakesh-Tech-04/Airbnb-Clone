@@ -41,7 +41,6 @@ export const Listing = () => {
         }
         if (e) {
             p = e.currentTarget.querySelector("p").textContent
-            console.log(p)
             setAllListing([])
             setSearchDescribe(p)
             lastId = null

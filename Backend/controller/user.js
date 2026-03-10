@@ -18,7 +18,7 @@ module.exports.signup = async (req, res) => {
     res.cookie("airbnbToken", token, {
         httpOnly: true,
         secure: true,
-        sameSite: "strict"
+        sameSite: "none"
     })
     await newUser.save()
     res.status(201).json({ success: true, user: playload, message: 'Welcome To Airbnb' })
@@ -40,7 +40,7 @@ module.exports.login = async (req, res) => {
     res.cookie("airbnbToken", token, {
         httpOnly: true,
         secure: true,
-        sameSite: "strict"
+        sameSite: "none"
     })
     res.status(200).json({ success: true, user: playload, message: 'You Logged In' })
 }
@@ -49,7 +49,7 @@ module.exports.logout = async (req, res) => {
     res.clearCookie('airbnbToken', {
         httpOnly: true,
         secure: true,
-        sameSite: "strict"
+        sameSite: "none"
     })
     res.status(200).json({ success: true, message: "You Logged Out" })
 }
