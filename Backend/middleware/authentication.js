@@ -7,7 +7,7 @@ module.exports.generateToken = (playload) => {
 
 module.exports.verifyToken = (req, res, next) => {
     let token = req.cookies.airbnbToken
-    if (!token) return res.status(401).json({ message: 'You need to login' })
+    if (!token) next(new ExpressError(401, 'You need to login'))
     try {
         let decode = jwt.verify(token, process.env.JWTSECRETCODE)
         req.user = decode

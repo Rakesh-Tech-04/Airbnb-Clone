@@ -68,7 +68,7 @@ module.exports.updateListing = async (req, res, next) => {
     let replacementIndex = JSON.parse(req.body.replacementIndex)
     for (let i = 0; i < replacementIndex.length; i++) {
         let index = replacementIndex[i]
-        await cloudinary.uploader.destroy(data.image[index].publicId, { resource_type: "image" })
+        await cloudinary.uploader.destroy(data.image[index].publicId, s)
         let image = await uploadInCloudinary(req.files[i])
         data.image[index] = image
     }
@@ -108,7 +108,6 @@ module.exports.searchListing = async (req, res) => {
             $or: [
                 { city: { $regex: search, $options: 'i' } },
                 { landmark: { $regex: search, $options: 'i' } },
-                // { describe: { $regex: search, $options: 'i' } },
             ]
         })
         res.json(listing)
