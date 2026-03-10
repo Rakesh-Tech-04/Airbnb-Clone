@@ -12,7 +12,7 @@ mongoose.connect(process.env.MONGOURL)
     .then(() => { console.log("connect") })
 
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: "https://airbnb-clone-frontend-d4u9.onrender.com",
     credentials: true
 }))
 
