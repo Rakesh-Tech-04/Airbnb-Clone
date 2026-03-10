@@ -3,7 +3,6 @@ const express = require("express")
 const mongoose = require("mongoose")
 const app = express()
 const cors = require("cors")
-const session = require("express-session");
 
 const userRouter = require("./routes/user")
 const listingRouter = require('./routes/listing')
@@ -17,17 +16,6 @@ app.use(cors({
     origin: "https://airbnb-clone-frontend-d4u9.onrender.com",
     credentials: true
 }))
-app.use(session({
-    secret: 'your_super_secret_key',  // change this
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        secure: true,       // only works with HTTPS
-        sameSite: 'none',   // required for cross-site cookies
-        httpOnly: true,     // prevents client-side JS access
-        maxAge: 24 * 60 * 60 * 1000 // 1 day
-    }
-}));
 
 app.use(cookieParser())
 app.use(express.json())
