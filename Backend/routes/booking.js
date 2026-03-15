@@ -1,8 +1,8 @@
-const express = require("express")
-const { wrapAsync } = require("../middleware/wrapAsync")
-const { renderBooking, existingBookingDate, createBooking, renderMyBooking } = require("../controller/booking")
-const { verifyToken } = require("../middleware/authentication")
-const { bookingValidation } = require("../middleware/joiValidation")
+import express from "express"
+import { wrapAsync } from "../middleware/wrapAsync.js"
+import { renderBooking, existingBookingDate, createBooking, renderMyBooking } from "../controller/booking.js"
+import { verifyToken } from "../middleware/authentication.js"
+import { bookingValidation } from "../middleware/joiValidation.js"
 const bookingRouter = express.Router({ mergeParams: true })
 
 bookingRouter
@@ -19,4 +19,4 @@ bookingRouter
     .post(verifyToken, bookingValidation, wrapAsync(createBooking))
 
 
-module.exports = bookingRouter
+export default bookingRouter

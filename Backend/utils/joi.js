@@ -1,6 +1,6 @@
-const Joi = require('joi');
+import Joi from 'joi'
 
-module.exports.listingSchema = Joi.object({
+export const listingSchema = Joi.object({
     title: Joi.string()
         .trim()
         .min(3)
@@ -37,7 +37,7 @@ module.exports.listingSchema = Joi.object({
         .optional()
 })
 
-module.exports.reviewSchema = Joi.object({
+export const reviewSchema = Joi.object({
     rating: Joi.number()
         .min(1)
         .max(5)
@@ -52,7 +52,7 @@ module.exports.reviewSchema = Joi.object({
     //     .required()
 })
 
-module.exports.bookingSchema = Joi.object({
+export const bookingSchema = Joi.object({
     listing: Joi.string()
         .pattern(/^[0-9a-fA-F]{24}$/)
         .required(),

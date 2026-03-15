@@ -1,4 +1,4 @@
-const cloudinary = require("cloudinary").v2
+import { v2 as cloudinary } from 'cloudinary'
 cloudinary.config({
     cloud_name: process.env.CLOUD_NAME,
     api_key: process.env.API_KEY,
@@ -25,4 +25,4 @@ const uploadInCloudinary = async (file) => {
 }
 
 
-module.exports = { uploadInCloudinary, cloudinary }
+export { uploadInCloudinary, cloudinary }

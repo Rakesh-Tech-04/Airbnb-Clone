@@ -1,19 +1,21 @@
-require('dotenv').config()
-const express = require("express")
-const mongoose = require("mongoose")
-const app = express()
-const cors = require("cors")
+import 'dotenv/config'
+import express from 'express'
+import mongoose from 'mongoose'
+import cors from 'cors'
+import cookieParser from 'cookie-parser'
+import userRouter from './routes/user.js'
+import listingRouter from './routes/listing.js'
+import bookingRouter from './routes/booking.js'
+import reviewRouter from './routes/Review.js'
 
-const userRouter = require("./routes/user")
-const listingRouter = require('./routes/listing')
-const cookieParser = require('cookie-parser')
-const bookingRouter = require('./routes/booking')
-const reviewRouter = require('./routes/Review')
+const app = express()
+
 mongoose.connect(process.env.MONGOURL)
     .then(() => { console.log("connect") })
 
 app.use(cors({
-    origin: "https://airbnb-clone-frontend-d4u9.onrender.com",
+    // origin: "https://airbnb-clone-frontend-d4u9.onrender.com",
+    origin: "http://localhost:5173",
     credentials: true
 }))
 

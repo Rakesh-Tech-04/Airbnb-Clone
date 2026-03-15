@@ -1,9 +1,9 @@
-const { default: mongoose } = require("mongoose")
-const Booking = require("../models/booking")
-const Listing = require("../models/listing")
-const ExpressError = require("../utils/ExpressError")
+import mongoose from "mongoose"
+import Booking from "../models/booking.js"
+import Listing from "../models/listing.js"
+import ExpressError from "../utils/ExpressError.js"
 
-module.exports.createBooking = async (req, res, next) => {
+export const createBooking = async (req, res, next) => {
     const { listing, fromDate, toDate } = req.body
     let nights = (new Date(toDate) - new Date(fromDate)) / (24 * 60 * 60 * 1000)
     let findListing = await Listing.findById(listing)
@@ -30,13 +30,13 @@ module.exports.createBooking = async (req, res, next) => {
     res.status(200).json(newBooking)
 }
 
-// module.exports.renderBooking = async (req, res) => {
-//     let { bookingId } = req.params
-//     let booking = await Booking.findById(bookingId).populate({ path: 'host', select: 'email' })
-//     res.status(200).json(booking)
-// }
+export const renderBooking = async (req, res) => {
+    let { bookingId } = req.params
+    let booking = await Booking.findById(bookingId).populate({ path: 'host', select: 'email' })
+    res.status(200).json(booking)
+}
 
-module.exports.existingBookingDate = async (req, res) => {
+export const existingBookingDate = async (req, res) => {
     let { listingId } = req.params
     let today = new Date()
     today.setHours(0, 0, 0, 0);
@@ -44,7 +44,7 @@ module.exports.existingBookingDate = async (req, res) => {
     res.status(200).json(bookings)
 }
 
-module.exports.renderMyBooking = async (req, res) => {
+export const renderMyBooking = async (req, res) => {
     let lastId = req.query.lastId
 
     let query = { user: req.user.id }

@@ -1,4 +1,4 @@
-const mongoose = require("mongoose")
+import mongoose from "mongoose";
 
 const reviewSchema = new mongoose.Schema({
     rating: {
@@ -30,4 +30,4 @@ reviewSchema.index({ listing: 1, createdAt: -1 })
 
 const Review = mongoose.model("Review", reviewSchema)
 
-module.exports = Review
+export default Review

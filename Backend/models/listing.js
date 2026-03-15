@@ -1,4 +1,4 @@
-const mongoose = require("mongoose")
+import mongoose from "mongoose";
 
 const listingSchema = new mongoose.Schema({
     title: {
@@ -48,4 +48,4 @@ listingSchema.index({ user: 1, _id: -1 })
 
 const Listing = mongoose.model("Listing", listingSchema)
 
-module.exports = Listing
+export default Listing

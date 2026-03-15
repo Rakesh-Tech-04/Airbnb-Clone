@@ -1,4 +1,4 @@
-const mongoose = require("mongoose")
+import mongoose from "mongoose";
 
 const bookingSchema = new mongoose.Schema({
     user: {
@@ -39,4 +39,4 @@ bookingSchema.index({ user: 1, _id: -1 })
 
 
 const Booking = mongoose.model("Booking", bookingSchema);
-module.exports = Booking
+export default Booking

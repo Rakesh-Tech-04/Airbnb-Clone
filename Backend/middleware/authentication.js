@@ -1,11 +1,11 @@
-const jwt = require("jsonwebtoken")
-const ExpressError = require("../utils/ExpressError")
+import jwt from "jsonwebtoken"
+import ExpressError from "../utils/ExpressError.js"
 
-module.exports.generateToken = (playload) => {
+export const generateToken = (playload) => {
     return jwt.sign(playload, process.env.JWTSECRETCODE)
 }
 
-module.exports.verifyToken = (req, res, next) => {
+export const verifyToken = (req, res, next) => {
     let token = req.cookies.airbnbToken
     if (!token) next(new ExpressError(401, 'You need to login'))
     try {

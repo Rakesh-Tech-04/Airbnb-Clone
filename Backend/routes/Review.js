@@ -1,8 +1,8 @@
-const express = require('express')
-const { verifyToken } = require('../middleware/authentication')
-const { reviewValidation } = require('../middleware/joiValidation')
-const { wrapAsync } = require('../middleware/wrapAsync')
-const { createReview, renderReview, deleteReview } = require('../controller/Review')
+import express from 'express'
+import { verifyToken } from '../middleware/authentication.js'
+import { reviewValidation } from '../middleware/joiValidation.js'
+import { wrapAsync } from '../middleware/wrapAsync.js'
+import { createReview, renderReview, deleteReview } from '../controller/Review.js'
 const reviewRouter = express.Router({ mergeParams: true })
 
 reviewRouter
@@ -14,4 +14,4 @@ reviewRouter
     .route('/:reviewId')
     .delete(verifyToken, wrapAsync(deleteReview))
 
-module.exports = reviewRouter
+export default reviewRouter

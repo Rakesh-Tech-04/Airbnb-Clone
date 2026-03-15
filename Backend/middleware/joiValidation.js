@@ -1,7 +1,7 @@
-const { reviewSchema, bookingSchema } = require("../utils/joi")
-const ExpressError = require("../utils/ExpressError")
+import { reviewSchema, bookingSchema } from "../utils/joi.js"
+import ExpressError from "../utils/ExpressError.js"
 
-module.exports.reviewValidation = (req, res, next) => {
+export const reviewValidation = (req, res, next) => {
     let { error } = reviewSchema.validate(req.body, {
         abortEarly: false,
         allowUnknown: false
@@ -15,7 +15,7 @@ module.exports.reviewValidation = (req, res, next) => {
     }
 }
 
-module.exports.bookingValidation = (req, res, next) => {
+export const bookingValidation = (req, res, next) => {
     let { error } = bookingSchema.validate(req.body, {
         abortEarly: false,
         allowUnknown: false

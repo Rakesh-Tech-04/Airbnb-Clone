@@ -1,15 +1,14 @@
-const { default: mongoose } = require("mongoose")
-const Listing = require("../models/listing")
-const Review = require("../models/review")
-const { uploadInCloudinary, cloudinary } = require("../utils/cloudinary")
-const ExpressError = require('../utils/ExpressError')
-const { listingSchema } = require("../utils/joi")
+import  mongoose  from "mongoose"
+import Listing from "../models/listing.js"
+import Review from "../models/review.js"
+import { uploadInCloudinary, cloudinary } from "../utils/cloudinary.js"
+import ExpressError from '../utils/ExpressError.js'
+import { listingSchema } from "../utils/joi.js"
 
-module.exports.renderListing = async (req, res) => {
+export const renderListing = async (req, res) => {
     let lastId = req.query.lastId
     let p = req.query.p
     let query = {}
-
     if (lastId) {
         query._id = { $lt: new mongoose.Types.ObjectId(lastId) }
     }
@@ -32,13 +31,13 @@ module.exports.renderListing = async (req, res) => {
     res.status(200).json({ allListing })
 }
 
-module.exports.selectedListing = async (req, res) => {
+export const selectedListing = async (req, res) => {
     let { listingId } = req.params
     let listing = await Listing.findById(listingId)
     res.status(200).json(listing)
 }
 
-module.exports.createListing = async (req, res, next) => {
+export const createListing = async (req, res, next) => {
     let data = JSON.parse(req.body.data)
     let image = await Promise.all((req.files).map((file) => uploadInCloudinary(file)))
     data = { ...data, image }
@@ -62,7 +61,7 @@ module.exports.createListing = async (req, res, next) => {
     res.status(201).json({ success: true, message: 'Listing is created' })
 }
 
-module.exports.updateListing = async (req, res, next) => {
+export const updateListing = async (req, res, next) => {
     let { listingId } = req.params
     let data = JSON.parse(req.body.data)
     let replacementIndex = JSON.parse(req.body.replacementIndex)
@@ -84,7 +83,7 @@ module.exports.updateListing = async (req, res, next) => {
     res.status(201).json(listing)
 }
 
-module.exports.deleteListing = async (req, res) => {
+export const deleteListing = async (req, res) => {
     let { listingId } = req.params
     await Review.deleteMany({ listing: listingId })
     let listing = await Listing.findByIdAndDelete(listingId)
@@ -97,7 +96,7 @@ module.exports.deleteListing = async (req, res) => {
     res.status(200).json(listing)
 }
 
-module.exports.searchListing = async (req, res) => {
+export const searchListing = async (req, res) => {
     const { search } = req.query
     if (search === 'Trending') {
         let listing = await Listing.find({})
@@ -114,7 +113,7 @@ module.exports.searchListing = async (req, res) => {
     }
 }
 
-module.exports.myListing = async (req, res) => {
+export const myListing = async (req, res) => {
     let lastId = req.query.lastId
     let query = { user: req.user.id }
 

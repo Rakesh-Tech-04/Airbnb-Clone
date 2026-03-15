@@ -1,10 +1,10 @@
-const bcrypt = require('bcrypt')
-const User = require('../models/user')
-const { generateToken } = require('../middleware/authentication.js')
-const jwt = require("jsonwebtoken")
-const ExpressError = require('../utils/ExpressError.js')
+import bcrypt from 'bcrypt'
+import User from '../models/user.js'
+import { generateToken } from '../middleware/authentication.js'
+import jwt from "jsonwebtoken"
+import ExpressError from '../utils/ExpressError.js'
 
-module.exports.signup = async (req, res) => {
+export const signup = async (req, res) => {
     let { email, password, name } = req.body
     if (!email || !password || !name) throw new ExpressError(400, "Email,Name and Password required")
 
@@ -24,7 +24,7 @@ module.exports.signup = async (req, res) => {
     res.status(201).json({ success: true, user: playload, message: 'Welcome To Airbnb' })
 }
 
-module.exports.login = async (req, res) => {
+export const login = async (req, res) => {
     let { email, password } = req.body
     if (!email || !password) throw new ExpressError(400, "Email and password required");
 
@@ -45,7 +45,7 @@ module.exports.login = async (req, res) => {
     res.status(200).json({ success: true, user: playload, message: 'You Logged In' })
 }
 
-module.exports.logout = async (req, res) => {
+export const logout = async (req, res) => {
     res.clearCookie('airbnbToken', {
         httpOnly: true,
         secure: true,
@@ -54,7 +54,7 @@ module.exports.logout = async (req, res) => {
     res.status(200).json({ success: true, message: "You Logged Out" })
 }
 
-module.exports.authStatus = async (req, res) => {
+export const authStatus = async (req, res) => {
     try {
         let token = req.cookies.airbnbToken
         if (!token) return res.json(null)

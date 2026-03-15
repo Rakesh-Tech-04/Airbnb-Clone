@@ -1,8 +1,8 @@
-const express = require("express")
-const { wrapAsync } = require("../middleware/wrapAsync")
-const { createListing, deleteListing, renderListing, updateListing, selectedListing, searchListing, myListing } = require("../controller/listing")
-const { verifyToken } = require("../middleware/authentication")
-const upload = require("../middleware/multer")
+import express from "express"
+import { wrapAsync } from "../middleware/wrapAsync.js"
+import { createListing, deleteListing, renderListing, updateListing, selectedListing, searchListing, myListing } from "../controller/listing.js"
+import { verifyToken } from "../middleware/authentication.js"
+import upload from "../middleware/multer.js"
 const listingRouter = express.Router()
 
 listingRouter
@@ -12,7 +12,7 @@ listingRouter
 
 listingRouter.get('/searchListing', wrapAsync(searchListing))
 
-listingRouter.get( '/mylisting',verifyToken, wrapAsync(myListing))
+listingRouter.get('/mylisting', verifyToken, wrapAsync(myListing))
 
 listingRouter
     .route('/:listingId')
@@ -21,4 +21,4 @@ listingRouter
     .delete(verifyToken, wrapAsync(deleteListing))
 
 
-module.exports = listingRouter
+export default listingRouter

@@ -27,7 +27,7 @@ import { useRef } from "react";
 export const Listing = () => {
     let navigation = useNavigate()
     let [allListing, setAllListing] = useState([])
-    const [loading, setLoading] = useState(false);
+    // const [loading, setLoading] = useState(false);
     const [searchDescribe, setSearchDescribe] = useState(null)
     const loadingRef = useRef(false);
 

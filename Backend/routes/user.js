@@ -1,7 +1,8 @@
-const express = require("express")
+import express from 'express'
+import { wrapAsync } from "../middleware/wrapAsync.js"
+import { signup, login, logout, authStatus } from "../controller/user.js"
+
 const userRouter = express.Router()
-const { wrapAsync } = require("../middleware/wrapAsync")
-const { signup, login, logout, authStatus } = require("../controller/user")
 
 userRouter
     .route("/signup")
@@ -19,4 +20,4 @@ userRouter
     .route('/authStatus')
     .get(wrapAsync(authStatus))
 
-module.exports = userRouter
+export default userRouter
