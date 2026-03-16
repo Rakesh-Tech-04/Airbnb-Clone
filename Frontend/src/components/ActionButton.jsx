@@ -1,4 +1,10 @@
-export const FunctionalityButton = ({ loadingTitle, title, onClick, type, isSubmitting = false }) => {
+export const ActionButton = ({
+    loadingTitle = "Loading...",
+    title = "Click",
+    onClick = () => { },
+    type = "button",
+    isSubmitting = false
+}) => {
     return (
         <div>
             <button disabled={isSubmitting} onClick={onClick} type={type} style={{

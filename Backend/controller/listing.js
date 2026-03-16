@@ -1,11 +1,11 @@
-import  mongoose  from "mongoose"
+import mongoose from "mongoose"
 import Listing from "../models/listing.js"
 import Review from "../models/review.js"
 import { uploadInCloudinary, cloudinary } from "../utils/cloudinary.js"
 import ExpressError from '../utils/ExpressError.js'
 import { listingSchema } from "../utils/joi.js"
 
-export const renderListing = async (req, res) => {
+export const getListings = async (req, res) => {
     let lastId = req.query.lastId
     let p = req.query.p
     let query = {}
@@ -31,7 +31,7 @@ export const renderListing = async (req, res) => {
     res.status(200).json({ allListing })
 }
 
-export const selectedListing = async (req, res) => {
+export const getListingById = async (req, res) => {
     let { listingId } = req.params
     let listing = await Listing.findById(listingId)
     res.status(200).json(listing)
@@ -113,7 +113,7 @@ export const searchListing = async (req, res) => {
     }
 }
 
-export const myListing = async (req, res) => {
+export const getUserListings = async (req, res) => {
     let lastId = req.query.lastId
     let query = { user: req.user.id }
 

@@ -10,7 +10,7 @@ export const UserContextProvider = ({ children }) => {
     let [loading, setLoading] = useState(true)
     useEffect(() => {
 
-        api.get('/user/authStatus')
+        api.get('/auth/authStatus')
             .then(({ data }) => {
                 console.log(data)
                 setUser(data)

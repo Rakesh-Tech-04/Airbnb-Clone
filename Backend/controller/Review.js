@@ -10,7 +10,7 @@ export const createReview = async (req, res) => {
     res.status(201).json({ success: true, message: "Thanks For Rating",newReview })
 }
 
-export const renderReview = async (req, res) => {
+export const getReviews = async (req, res) => {
     let { listingId } = req.params
     let review = await Review.find({ listing: listingId }).populate("user", "name").sort({ createdAt: -1 })
     res.status(200).json(review)

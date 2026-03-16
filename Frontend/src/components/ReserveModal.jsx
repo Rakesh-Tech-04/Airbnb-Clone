@@ -1,17 +1,16 @@
 import CloseIcon from '@mui/icons-material/Close';
 import Box from '@mui/material/Box';
 import { styled } from '@mui/material/styles';
-import { FunctionalityButton } from './FunctionalityButton';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { api } from '../util/axios';
 import { useNavigate } from 'react-router-dom';
-import { useUser } from '../util/UserContext';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { toast } from 'react-toastify';
+import { ActionButton } from './ActionButton';
 
-export const Reserve = ({ handleClose, listing }) => {
+export const ReserveModal = ({ handleClose, listing }) => {
     let navigate = useNavigate()
     let [fromDate, setFromDate] = useState(null)
     let [nights, setNights] = useState(0)
@@ -39,7 +38,7 @@ export const Reserve = ({ handleClose, listing }) => {
     })
 
     useEffect(() => {
-        api.get(`/listing/booking/${listing._id}`)
+        api.get(`/listings/${listing._id}/bookings`)
             .then(({ data }) => {
                 setExistingBookingDates(data)
             })
@@ -55,7 +54,7 @@ export const Reserve = ({ handleClose, listing }) => {
             fromDate: fromDate,
             toDate: toDate,
         }
-        api.post(`/listing/booking/${listing._id}`, data).then(({ data }) => {
+        api.post(`/bookings/${listing._id}`, data).then(({ data }) => {
             navigate(`/booking/${data._id}`)
         })
     }
@@ -151,7 +150,7 @@ export const Reserve = ({ handleClose, listing }) => {
 
                             </InputWrapper>
                             <Box sx={{ textAlign: 'center', marginBottom: '3rem' }}>
-                                <FunctionalityButton title={"Book Now"} />
+                                <ActionButton type='submit' title={"Book Now"} />
                             </Box>
                         </form>
                     </Box>

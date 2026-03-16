@@ -1,18 +1,18 @@
 import Box from "@mui/material/Box"
-import { BackButton } from "../components/BackButton"
+import { BackButton } from "../../components/BackButton"
 import { useParams } from "react-router-dom"
 import React, { useEffect, useState } from "react"
-import { api } from "../util/axios"
+import { api } from "../../util/axios"
 import CardMedia from '@mui/material/CardMedia';
-import { ListingAction } from "../components/ListingAction"
 import Container from "@mui/material/Container"
 import { toast } from "react-toastify"
-import { useUser } from "../util/UserContext"
+import { useUser } from "../../util/UserContext"
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import Rating from '@mui/material/Rating';
+import { ListingActionModal } from "../../components/ListingActionModal"
 
 
-export const ViewListing = () => {
+export const ListingDetails = () => {
   const { user } = useUser()
   let [reviews, setReviews] = useState([])
   let [showDelete, setShowDelete] = useState(null)
@@ -20,10 +20,10 @@ export const ViewListing = () => {
   let [listing, setListing] = useState({})
 
   useEffect(() => {
-    api.get(`/listing/${listingId}`).then(({ data }) => {
+    api.get(`/listings/${listingId}`).then(({ data }) => {
       setListing(data)
     })
-    api.get(`/listing/${listingId}/review`)
+    api.get(`/listings/${listingId}/reviews`)
       .then(({ data }) => {
         setReviews(data)
       }).catch(({ response }) => {
@@ -31,8 +31,7 @@ export const ViewListing = () => {
       })
   }, [])
   const handleReviewDelete = (reviewId) => {
-    console.log('delte', reviewId)
-    api.delete(`/listing/${listingId}/review/${reviewId}`).then(({ data }) => {
+    api.delete(`/listings/${listingId}/reviews/${reviewId}`).then(({ data }) => {
       setReviews(prev => (
         prev.filter(item => item._id !== data._id)
       ))
@@ -74,7 +73,7 @@ export const ViewListing = () => {
         <Box sx={{ fontSize: '1.7rem' }}>{listing.description}</Box>
         <Box sx={{ fontSize: '1.7rem', marginTop: '0.7rem' }}>Rs.{listing.rent}/day
         </Box>
-        {user && <ListingAction listing={listing} setListing={setListing} />}
+        {user && <ListingActionModal listing={listing} setListing={setListing} />}
       </Box>
       <Box>
         {reviews && reviews.map((review) =>

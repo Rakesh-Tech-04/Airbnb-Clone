@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
-import { BackButton } from '../components/BackButton'
+import { BackButton } from '../../../components/BackButton'
 import Box from "@mui/material/Box"
 import CardMedia from '@mui/material/CardMedia';
-import { FunctionalityButton } from '../components/FunctionalityButton'
 import { useNavigate } from 'react-router-dom';
-import { api } from "../util/axios"
+import { api } from "../../../util/axios"
 import { toast } from 'react-toastify';
+import { ActionButton } from '../../../components/ActionButton';
 
-export const Page3 = () => {
+export const AddConfirmation = () => {
     let [isLoading, setIsLoading] = useState(false)
     let navigate = useNavigate()
     let [data, setData] = useState({})
@@ -17,7 +17,7 @@ export const Page3 = () => {
 
     useEffect(() => {
         let values = getValues()
-        if (Object.keys(values).length <= 1) navigate('/listing/addListing/page1')
+        if (Object.keys(values).length <= 1) navigate('/listing/add/basic-info')
         setData(values)
         if (values.image) {
             const urls = (values.image).map(item => URL.createObjectURL(item[0]))
@@ -35,16 +35,16 @@ export const Page3 = () => {
             )
             let { image, ...newData } = data
             formData.append("data", JSON.stringify(newData))
-            await api.post('/listing', formData).then(({ data }) => {
+            await api.post('/listings', formData).then(({ data }) => {
                 toast.success(data.message)
-                navigate('/listing')
+                navigate('/listings')
             }).catch(({ response }) => {
                 toast.error(response.data.message)
                 if (response.status === 401) {
-                    navigate('/user/authentication')
+                    navigate('/authentication')
                 }
                 else {
-                    navigate('/listing/addListing/page1')
+                    navigate('/listing/add/basic-info')
                 }
             })
         }
@@ -83,7 +83,7 @@ export const Page3 = () => {
                 <Box sx={{ fontSize: '1.7rem' }}>{data.description}</Box>
                 <Box sx={{ fontSize: '1.7rem', marginTop: '0.7rem' }}>Rs.{data.rent}/day
                 </Box>
-                <FunctionalityButton isSubmitting={isLoading} title={"Add Listing"} loadingTitle={'Adding....'} onClick={handleButton} />
+                <ActionButton isSubmitting={isLoading} title={"Add Listing"} loadingTitle={'Adding....'} onClick={handleButton} />
             </Box>
         </>
     )

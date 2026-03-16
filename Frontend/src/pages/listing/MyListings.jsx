@@ -1,18 +1,17 @@
 import Box from "@mui/material/Box"
 import { useEffect, useRef, useState } from "react"
-import { useNavigate, useParams } from "react-router-dom"
-import { api } from "../util/axios"
+import { useNavigate } from "react-router-dom"
+import { api } from "../../util/axios"
 import Card from '@mui/material/Card';
 import CardMedia from '@mui/material/CardMedia';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import Typography from '@mui/material/Typography';
 import { Pagination } from 'swiper/modules';
 import CardContent from '@mui/material/CardContent';
-import { BackButton } from "../components/BackButton";
+import { BackButton } from "../../components/BackButton";
 import { toast } from 'react-toastify';
 
-
-export const MyListing = () => {
+export const MyListings = () => {
     let navigate = useNavigate()
     let [allListing, setAllListing] = useState([])
     let [hasMore, setHasMore] = useState(true)
@@ -25,14 +24,14 @@ export const MyListing = () => {
         if (allListing.length > 0) {
             lastId = allListing[allListing.length - 1]._id;
         }
-        api.get(`/listing/mylisting`, { params: { lastId } }).then(({ data }) => {
+        api.get(`/listings/my`, { params: { lastId } }).then(({ data }) => {
             setAllListing(prev => [...prev, ...data.allListing]);
             setHasMore(data.hasMore);
         })
             .catch(({response}) => { 
                 toast.error(response.data.message) 
                 if(response.status === 401){
-                    navigate(`/user/authentication`)
+                    navigate(`/authentication`)
                 }
             })
             .finally(() => {

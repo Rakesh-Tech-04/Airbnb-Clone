@@ -9,12 +9,12 @@ import PoolIcon from '@mui/icons-material/Pool';
 import BedIcon from '@mui/icons-material/Bed';
 import BedroomParentIcon from '@mui/icons-material/BedroomParent';
 import StoreIcon from '@mui/icons-material/Store';
-import { BackButton } from '../components/BackButton'
-import { LogoButton } from "../components/LogoButton"
-import { FunctionalityButton } from '../components/FunctionalityButton'
+import { BackButton } from '../../../components/BackButton'
+import { LogoButton } from "../../../components/LogoButton"
 import { useNavigate } from 'react-router-dom';
+import { ActionButton } from '../../../components/ActionButton';
 
-export const Page2 = () => {
+export const AddDetails = () => {
     let navigate = useNavigate()
     let [describes, setDescribes] = useState([
         { name: 'Villa', border: true, icon: VillaIcon },
@@ -54,7 +54,7 @@ export const Page2 = () => {
         describes.forEach((item) => {
             if (!item.border) {
                 setValue("describe", item.name)
-                navigate('/listing/addListing/page3')
+                navigate('/listing/add/confirmation')
             }
         })
     }
@@ -104,7 +104,7 @@ export const Page2 = () => {
                 right: { xs: 10, sm: 20, md: 40 },
                 bottom: { xs: 10, md: 10 },
             }}>
-                <FunctionalityButton title={"Next"} onClick={handleClick} />
+                <ActionButton title={"Next"} onClick={handleClick} />
             </Box>
         </Box>
     )

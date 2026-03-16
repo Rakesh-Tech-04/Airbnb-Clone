@@ -112,13 +112,13 @@ export const Navbar = () => {
 
     const handleAuth = () => {
         if (user) {
-            api.delete('/user/logout').then(({ data }) => {
+            api.delete('/auth/logout').then(({ data }) => {
                 toast.success(data.message)
                 setUser(null)
             })
         }
         else {
-            navigate('/user/authentication')
+            navigate('/authentication')
         }
     }
     const handleSearch = (e) => {
@@ -148,13 +148,13 @@ export const Navbar = () => {
                     </MenuItem>
                 </Box>
             </Box>
-            <NavLink to={'/listing/addListing/page1'} style={styleLinks}>
+            <NavLink to={'/listing/add/basic-info'} style={styleLinks}>
                 <MenuItem sx={styleMenuItem} onClick={handleMenuClose}>List Your Home </MenuItem>
             </NavLink>
-            <NavLink to={`/mylisting`} style={styleLinks}>
+            <NavLink to={'/my-listings'} style={styleLinks}>
                 <MenuItem sx={styleMenuItem} onClick={handleMenuClose}>My Listing</MenuItem>
             </NavLink>
-            <NavLink to={'/myBooking'} style={styleLinks}>
+            <NavLink to={'/my-bookings'} style={styleLinks}>
                 <MenuItem sx={styleMenuItem} onClick={handleMenuClose}>My Booking</MenuItem>
             </NavLink>
         </Menu>
@@ -246,7 +246,7 @@ export const Navbar = () => {
                             alignItems: 'center',
                             gap: 1,
                         }}>
-                            <ListYourHome onClick={() => { navigate('/listing/addListing/page1') }}
+                            <ListYourHome onClick={() => { navigate('/listing/add/basic-info') }}
                             >List Your Home</ListYourHome>
                             <Box onClick={handleProfileMenuOpen} sx={{
                                 cursor: 'pointer', border: '2px solid #a5a3a3', borderRadius: '2rem',

@@ -27,16 +27,16 @@ export const createBooking = async (req, res, next) => {
         listing, fromDate, toDate, user: req.user.id, totalPrice, host, status: 'Booked'
     })
     await newBooking.save()
-    res.status(200).json(newBooking)
+    res.status(201).json(newBooking)
 }
 
-export const renderBooking = async (req, res) => {
+export const getBookingById = async (req, res) => {
     let { bookingId } = req.params
     let booking = await Booking.findById(bookingId).populate({ path: 'host', select: 'email' })
     res.status(200).json(booking)
 }
 
-export const existingBookingDate = async (req, res) => {
+export const checkBookingAvailability = async (req, res) => {
     let { listingId } = req.params
     let today = new Date()
     today.setHours(0, 0, 0, 0);
@@ -44,7 +44,7 @@ export const existingBookingDate = async (req, res) => {
     res.status(200).json(bookings)
 }
 
-export const renderMyBooking = async (req, res) => {
+export const getUserBookings = async (req, res) => {
     let lastId = req.query.lastId
 
     let query = { user: req.user.id }

@@ -3,11 +3,10 @@ import express from 'express'
 import mongoose from 'mongoose'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
-import userRouter from './routes/user.js'
 import listingRouter from './routes/listing.js'
 import bookingRouter from './routes/booking.js'
 import reviewRouter from './routes/Review.js'
-
+import authRouter from './routes/auth.js'
 const app = express()
 
 mongoose.connect(process.env.MONGOURL)
@@ -23,10 +22,10 @@ app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-app.use("/api/v1/user", userRouter)
-app.use('/api/v1/listing', listingRouter)
-app.use('/api/v1/listing/booking', bookingRouter)
-app.use('/api/v1/listing/:listingId/review', reviewRouter)
+app.use("/api/auth", authRouter)
+app.use('/api/listings', listingRouter)
+app.use('/api/bookings', bookingRouter)
+app.use('/api/listings/:listingId/reviews', reviewRouter)
 
 app.use((err, req, res, next) => {
     // Mongoose CastError

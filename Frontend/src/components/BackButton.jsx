@@ -6,13 +6,13 @@ export const BackButton = (authSection = false) => {
     return (
         <button style={{ background: 'transparent', border: 'none' }} onClick={() => {
             if (authSection) {
-                navigate('/listing')
+                navigate('/listings')
             }
             else if (window.history.length > 1) {
                 navigate(-1);
             }
             else {
-                navigate("/listing"); // safe default
+                navigate("/listings"); 
             }
         }}>
             <ArrowCircleLeftIcon sx={{

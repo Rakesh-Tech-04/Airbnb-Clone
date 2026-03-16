@@ -1,25 +1,17 @@
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Modal';
 import * as React from 'react';
-import { useEffect } from 'react';
-import { api } from '../util/axios';
 import { useNavigate } from 'react-router-dom';
-import { EditListing } from './EditListing';
-import { Reserve } from './Reserve';
+import { EditListingModal } from './EditListingModal';
+import { ReserveModal } from './ReserveModal';
 import { useUser } from '../util/UserContext';
 
-export const ListingAction = ({ listing, setListing }) => {
+export const ListingActionModal = ({ listing, setListing }) => {
     let navigate = useNavigate()
-    let [isUser, setIsUser] = React.useState({})
-    let { user, setUser } = useUser()
-    useEffect(() => {
-        api.get('/user/authStatus').then(({ data }) => {
-            setIsUser(data)
-        })
-    }, [])
+    let { user } = useUser()
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => {
-        user ? setOpen(true) : navigate('/user/authentication')
+        user ? setOpen(true) : navigate('/authentication')
     };
     const handleClose = () => setOpen(false);
 
@@ -37,14 +29,14 @@ export const ListingAction = ({ listing, setListing }) => {
             }} onClick={handleOpen}>{listing.user === user?.id ? "Edit Listing" : "Reserve"}</Button>
             <Dialog
                 open={open}
-                // aria-labelledby="modal-modal-title"
-                // aria-describedby="modal-modal-description"
+            // aria-labelledby="modal-modal-title"
+            // aria-describedby="modal-modal-description"
             >
                 {
                     listing.user === user?.id ?
-                        <EditListing listing={listing} setListing={setListing} handleClose={handleClose} />
+                        <EditListingModal listing={listing} setListing={setListing} handleClose={handleClose} />
                         :
-                        <Reserve handleClose={handleClose} listing={listing} />
+                        <ReserveModal handleClose={handleClose} listing={listing} />
                 }
             </Dialog>
         </div>

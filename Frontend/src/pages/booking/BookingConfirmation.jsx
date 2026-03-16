@@ -1,12 +1,12 @@
 import Box from '@mui/material/Box'
 import { styled } from '@mui/material/styles'
-import { FunctionalityButton } from '../components/FunctionalityButton'
 import { useNavigate, useParams } from 'react-router-dom'
 import React, { useEffect, useState } from 'react'
-import { api } from '../util/axios'
+import { api } from '../../util/axios'
 import Rating from '@mui/material/Rating';
 import Container from "@mui/material/Container"
 import { toast } from 'react-toastify'
+import { ActionButton } from '../../components/ActionButton'
 
 
 export const BookingConfirmation = () => {
@@ -22,29 +22,28 @@ export const BookingConfirmation = () => {
         marginBlock: '1.5rem'
     })
     useEffect(() => {
-        api.get(`listing/booking/${params.bookingId}`).then(({ data }) => {
+        api.get(`/bookings/${params.bookingId}`).then(({ data }) => {
             setBookingDetail(data)
         })
     }, [])
 
     const handleClick = () => {
-        navigate('/listing')
+        navigate('/listings')
     }
     let handleReview = () => {
         let data = {
             rating, comment
         }
-        api.post(`/listing/${bookingDetail.listing}/review`, data)
+        api.post(`/listings/${bookingDetail.listing}/reviews`, data)
             .then(({ data }) => {
                 setComment('')
                 toast.success(data.message)
-                navigate('/listing')
+                navigate('/listings')
             })
             .catch(({ response }) => {
                 toast.error(response.data.message)
             })
     }
-
 
     return (
         <Box sx={{
@@ -52,7 +51,7 @@ export const BookingConfirmation = () => {
             backgroundColor: '#cfcfcfcc',
         }}>
             <Box sx={{ display: "flex", justifyContent: 'end' }}>
-                <FunctionalityButton title={'Back to Home'} onClick={handleClick} />
+                <ActionButton title={'Back to Home'} onClick={handleClick} />
             </Box>
             <Box sx={{
                 flexGrow: 1,

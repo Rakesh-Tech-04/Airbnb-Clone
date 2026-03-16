@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
-import { Navbar } from "../components/Navbar"
-import { api } from "../util/axios"
+import { Navbar } from "../../components/Navbar"
+import { api } from "../../util/axios"
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
@@ -20,11 +20,10 @@ import BedIcon from '@mui/icons-material/Bed';
 import BedroomParentIcon from '@mui/icons-material/BedroomParent';
 import WhatshotIcon from '@mui/icons-material/Whatshot';
 import StoreIcon from '@mui/icons-material/Store';
-
 import { toast } from "react-toastify";
 import { useRef } from "react";
 
-export const Listing = () => {
+export const Listings = () => {
     let navigation = useNavigate()
     let [allListing, setAllListing] = useState([])
     // const [loading, setLoading] = useState(false);
@@ -49,7 +48,7 @@ export const Listing = () => {
             )))
         }
 
-        api.get("/listing", { params: { lastId, p } })
+        api.get("/listings", { params: { lastId, p } })
             .then(({ data }) => {
                 setAllListing(prev => [...prev, ...data.allListing]);
             })

@@ -1,61 +1,64 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
-import { Listing } from "../pages/Listing";
-import { ViewListing } from "../pages/ViewListing";
-import { Page1 } from "../pages/Page1";
-import { Page2 } from "../pages/Page2";
-import { AddListingLayout } from "../pages/AddListingLayout";
-import { Page3 } from "../pages/Page3";
-import { Authentication } from "../pages/Authentication";
-import { BookingConfirmation } from "../pages/BookingConfirmation";
-import { MyListing } from "../pages/MyListing";
-import { MyBooking } from "../pages/MyBooking";
+import { Authentication } from "../pages/user/Authentication";
+import { MyBookings } from "../pages/booking/MyBookings";
+import { BookingConfirmation } from "../pages/booking/BookingConfirmation";
+import { Listings } from "../pages/listing/Listings";
+import { ListingDetails } from "../pages/listing/ListingDetails";
+import { MyListings } from "../pages/listing/MyListings";
+import { AddListingLayout } from "../pages/listing/add/AddListingLayout";
+import { AddBasicInfo } from "../pages/listing/add/AddBasicInfo";
+import { AddDetails } from "../pages/listing/add/AddDetails";
+import { AddConfirmation } from "../pages/listing/add/AddConfirmation";
 
 export const router = createBrowserRouter([{
     path: "/",
     element: <App />,
     children: [
+        /* Listings */
         {
-            path: "listing",
-            element: <Listing />
+            path: "listings",
+            element: <Listings />
         },
         {
-            path: 'listing/addListing',
+            path: 'listing/add',
             element: <AddListingLayout />,
             children: [
                 {
-                    path: 'page1',
-                    element: <Page1 />
+                    path: 'basic-info',
+                    element: <AddBasicInfo />
                 },
                 {
-                    path: 'page2',
-                    element: <Page2 />
+                    path: 'details',
+                    element: <AddDetails />
                 },
                 {
-                    path: 'page3',
-                    element: <Page3 />
+                    path: 'confirmation',
+                    element: <AddConfirmation />
                 }
             ]
         },
         {
-            path: "/user/authentication",
+            path: 'listing/:listingId',
+            element: <ListingDetails />
+        },
+
+        {
+            path: 'my-listings',
+            element: <MyListings />
+        },
+        {
+            path: "authentication",
             element: <Authentication />
         },
+
         {
-            path: '/mylisting',
-            element: <MyListing />
-        },
-        {
-            path: 'listing/:listingId',
-            element: <ViewListing />
-        },
-        {
-            path: '/booking/:bookingId',
+            path: 'booking/:bookingId',
             element: <BookingConfirmation />
         },
         {
-            path: '/myBooking',
-            element: <MyBooking />
+            path: 'my-bookings',
+            element: <MyBookings />
         }
 
     ]

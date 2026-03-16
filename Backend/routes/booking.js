@@ -1,22 +1,21 @@
 import express from "express"
 import { wrapAsync } from "../middleware/wrapAsync.js"
-import { renderBooking, existingBookingDate, createBooking, renderMyBooking } from "../controller/booking.js"
+import { createBooking, getUserBookings, getBookingById } from "../controller/booking.js"
 import { verifyToken } from "../middleware/authentication.js"
 import { bookingValidation } from "../middleware/joiValidation.js"
-const bookingRouter = express.Router({ mergeParams: true })
+const router = express.Router()
 
-bookingRouter
-    .route('/myBooking')
-    .get(verifyToken, wrapAsync(renderMyBooking))
-
-bookingRouter
-    .route("/:bookingId")
-    .get(wrapAsync(renderBooking))
-
-bookingRouter
-    .route('/:listingId')
-    .get(wrapAsync(existingBookingDate))
+router
+    .route('/')
     .post(verifyToken, bookingValidation, wrapAsync(createBooking))
 
+router
+    .route('/my')
+    .get(verifyToken, wrapAsync(getUserBookings))
 
-export default bookingRouter
+router
+    .route("/:bookingId")
+    .get(wrapAsync(getBookingById))
+
+
+export default router

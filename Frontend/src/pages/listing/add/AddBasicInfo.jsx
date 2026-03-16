@@ -1,14 +1,12 @@
 import Box from "@mui/material/Box"
 import { styled } from "@mui/material/styles"
-import { BackButton } from "../components/BackButton"
-import { FunctionalityButton } from "../components/FunctionalityButton"
-import { LogoButton } from "../components/LogoButton"
+import { BackButton } from "../../../components/BackButton"
+import { LogoButton } from "../../../components/LogoButton"
 import { useFormContext } from 'react-hook-form'
 import { useNavigate } from "react-router-dom"
-import { useUser } from "../util/UserContext"
-import { useEffect } from "react"
+import { ActionButton } from "../../../components/ActionButton"
 
-export const Page1 = () => {
+export const AddBasicInfo = () => {
     let navigate = useNavigate()
     let { register, handleSubmit, formState: { isSubmitting } } = useFormContext()
     let InputField = styled('input')(({ theme }) => ({
@@ -45,7 +43,7 @@ export const Page1 = () => {
         marginBlock: '0.5rem'
     })
     const onSubmit =  () => {
-        navigate('/listing/addListing/page2')
+        navigate('/listing/add/details')
     }
     return (
         <Box>
@@ -96,7 +94,7 @@ export const Page1 = () => {
                         <Label>Landmark</Label>
                         <InputField required {...register("landmark")} placeholder="Landmark" />
                     </Box>
-                    <FunctionalityButton title={"Next"} isSubmitting={isSubmitting} loadingTitle={'loading...'} />
+                    <ActionButton type="submit" title={"Next"} isSubmitting={isSubmitting} loadingTitle={'loading...'} />
                 </Box>
 
             </form>

@@ -1,13 +1,13 @@
 import Box from '@mui/material/Box';
 import * as React from 'react';
 import { styled } from '@mui/material/styles';
-import { FunctionalityButton } from './FunctionalityButton';
 import { api } from '../util/axios';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form'
 import CloseIcon from '@mui/icons-material/Close';
 import { LogoButton } from './LogoButton';
 import { toast } from 'react-toastify';
+import { ActionButton } from './ActionButton';
 
 const style = {
     position: 'absolute',
@@ -24,7 +24,7 @@ const style = {
     overflowX: 'auto',
 
 };
-export const EditListing = ({ listing, setListing, handleClose }) => {
+export const EditListingModal = ({ listing, setListing, handleClose }) => {
     let { register, handleSubmit, reset, formState: { isSubmitting } } = useForm()
     let [isDeleting, setIsDeleting] = React.useState(false)
     let navigate = useNavigate()
@@ -78,13 +78,13 @@ export const EditListing = ({ listing, setListing, handleClose }) => {
         formData.append('replacementIndex', JSON.stringify(replacementIndex))
         formData.append('data', JSON.stringify({ ...data, image: listing.image }))
         handleClose()
-        api.put(`/listing/${listing._id}`, formData).then(({ data }) => {
+        api.put(`/listings/${listing._id}`, formData).then(({ data }) => {
             setListing(data)
             toast.success('Updated Your Listing');
         }).catch(({ response }) => {
             toast.error(response.data.message)
             if (response.status === 401) {
-                navigate('/user/authentication')
+                navigate('/authentication')
             }
         })
     }
@@ -92,14 +92,14 @@ export const EditListing = ({ listing, setListing, handleClose }) => {
         if (isDeleting) return
         setIsDeleting(true)
         try {
-            await api.delete(`/listing/${listingId}`).then(() => {
-                navigate("/listing")
+            await api.delete(`/listings/${listingId}`).then(() => {
+                navigate("/listings")
                 toast.success('Your Listing Deleted ')
             }
             ).catch(({ response }) => {
                 toast.error(response.data.message)
                 if (response.status === 401) {
-                    navigate('/user/authentication')
+                    navigate('/authentication')
                 }
             })
         } finally {
@@ -156,8 +156,8 @@ export const EditListing = ({ listing, setListing, handleClose }) => {
                     <InputField required {...register("landmark")} placeholder="Landmark" />
                 </Box>
                 <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center' }}>
-                    <FunctionalityButton title={"Edit Listing"} loadingTitle={"Update...."} type={'submit'} isSubmitting={isSubmitting} />
-                    <FunctionalityButton title={"Delete Listing"} loadingTitle={"Delete...."} isSubmitting={isDeleting} onClick={() => handleDelete(listing._id)} type={'button'} />
+                    <ActionButton title={"Edit Listing"} loadingTitle={"Update...."} type={'submit'} isSubmitting={isSubmitting} />
+                    <ActionButton title={"Delete Listing"} loadingTitle={"Delete...."} isSubmitting={isDeleting} onClick={() => handleDelete(listing._id)} type={'button'} />
 
                 </Box>
             </form>

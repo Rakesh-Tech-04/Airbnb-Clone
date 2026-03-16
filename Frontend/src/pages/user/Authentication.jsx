@@ -1,14 +1,14 @@
 import Box from "@mui/material/Box"
-import { BackButton } from "../components/BackButton"
+import { BackButton } from "../../components/BackButton"
 import { styled } from '@mui/material/styles';
-import { FunctionalityButton } from "../components/FunctionalityButton";
+import { ActionButton } from "../../components/ActionButton";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { api } from "../util/axios";
+import { api } from "../../util/axios";
 import { useNavigate } from "react-router-dom";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import { useUser } from "../util/UserContext";
+import { useUser } from "../../util/UserContext";
 import { toast } from 'react-toastify'
 
 export const Authentication = () => {
@@ -37,7 +37,7 @@ export const Authentication = () => {
         reset()
     }
     const onSubmit = async (data) => {
-        let url = authTitle === 'Login' ? "/user/login" : "/user/signup"
+        let url = authTitle === 'Login' ? "/auth/login" : "/auth/signup"
         api.post(url, data).then(({ data }) => {
             setUser(data.user)
             toast.success(data.message)
@@ -89,7 +89,7 @@ export const Authentication = () => {
 
                                 }} />}
                     </Box>
-                    <FunctionalityButton title={authTitle} />
+                    <ActionButton title={authTitle} type="submit" />
                     <Box>Create new account <span onClick={changeAuth} style={{ color: 'red', cursor: 'pointer' }}>{authTitle == 'Login' ? 'Sign Up' : 'Login'}</span></Box>
                 </form>
 

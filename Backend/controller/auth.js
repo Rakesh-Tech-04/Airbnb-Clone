@@ -18,7 +18,8 @@ export const signup = async (req, res) => {
     res.cookie("airbnbToken", token, {
         httpOnly: true,
         secure: true,
-        sameSite: "none"
+        sameSite: "none",
+        maxAge: 3 * 24 * 60 * 60 * 1000
     })
     await newUser.save()
     res.status(201).json({ success: true, user: playload, message: 'Welcome To Airbnb' })
@@ -40,7 +41,8 @@ export const login = async (req, res) => {
     res.cookie("airbnbToken", token, {
         httpOnly: true,
         secure: true,
-        sameSite: "none"
+        sameSite: "none",
+        maxAge: 3 * 24 * 60 * 60 * 1000
     })
     res.status(200).json({ success: true, user: playload, message: 'You Logged In' })
 }

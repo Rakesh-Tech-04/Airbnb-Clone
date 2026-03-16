@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react"
-import { api } from "../util/axios"
+import { api } from "../../util/axios"
 import { toast } from "react-toastify"
 import Box from "@mui/material/Box"
 import Container from "@mui/material/Container"
 import { useNavigate } from 'react-router-dom'
 
-export const MyBooking = () => {
+export const MyBookings = () => {
     let navigate = useNavigate()
     let [allBooking, setAllBooking] = useState([])
     let [hasMore, setHasMore] = useState(true)
@@ -18,14 +18,14 @@ export const MyBooking = () => {
         if (allBooking.length > 0) {
             lastId = allBooking[allBooking.length - 1]._id
         }
-        api.get(`/listing/booking/myBooking`, { params: { lastId } })
+        api.get(`/bookings/my`, { params: { lastId } })
             .then(({ data }) => {
                 setAllBooking(prev => [...prev, ...data.allBooking])
                 setHasMore(hasMore)
             })
             .catch(({ response }) => {
                 if (response.status === 401) {
-                    navigate('/user/authentication')
+                    navigate('/authentication')
                 }
                 toast.error(response.data.message)
             })
