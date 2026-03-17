@@ -1,6 +1,6 @@
 import Box from "@mui/material/Box"
 import { BackButton } from "../../components/BackButton"
-import { useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import React, { useEffect, useState } from "react"
 import { api } from "../../util/axios"
 import CardMedia from '@mui/material/CardMedia';
@@ -13,6 +13,7 @@ import { ListingActionModal } from "../../components/ListingActionModal"
 
 
 export const ListingDetails = () => {
+  let navigate = useNavigate()
   const { user } = useUser()
   let [reviews, setReviews] = useState([])
   let [showDelete, setShowDelete] = useState(null)
@@ -20,14 +21,22 @@ export const ListingDetails = () => {
   let [listing, setListing] = useState({})
 
   useEffect(() => {
-    api.get(`/listings/${listingId}`).then(({ data }) => {
-      setListing(data)
-    })
-    api.get(`/listings/${listingId}/reviews`)
+    api.get(`/listings/${listingId}`)
+      .then(({ data }) => {
+        if (!data) {
+          toast.error("Listing doesn't exist")
+          navigate('/listings')
+          throw new Error("STOP")
+        }
+        setListing(data)
+        return api.get(`/listings/${listingId}/reviews`)
+      })
       .then(({ data }) => {
         setReviews(data)
-      }).catch(({ response }) => {
+      })
+      .catch(({ response }) => {
         toast.error(response.data.message)
+        navigate('/listings')
       })
   }, [])
   const handleReviewDelete = (reviewId) => {

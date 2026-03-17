@@ -26,9 +26,6 @@ export const ReserveModal = ({ handleClose, listing }) => {
     let InputWrapper = styled('div')(({ theme }) => ({
         display: 'flex',
         alignItems: 'center',
-        // [theme.breakpoints.down("md")]: {
-        //     // width: '80vw'
-        // },
     }))
 
     let BillWrapper = styled('div')({
@@ -54,9 +51,13 @@ export const ReserveModal = ({ handleClose, listing }) => {
             fromDate: fromDate,
             toDate: toDate,
         }
-        api.post(`/bookings/${listing._id}`, data).then(({ data }) => {
-            navigate(`/booking/${data._id}`)
-        })
+        api.post(`/bookings`, data)
+            .then(({ data }) => {
+                navigate(`/booking/${data._id}`)
+            })
+            .catch(({ response }) => {
+                toast.error(response.data.message)
+            })
     }
     let maxToDate = null;
 

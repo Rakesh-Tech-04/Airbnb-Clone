@@ -4,6 +4,7 @@ import { toast } from "react-toastify"
 import Box from "@mui/material/Box"
 import Container from "@mui/material/Container"
 import { useNavigate } from 'react-router-dom'
+import { BackButton } from '../../components/BackButton'
 
 export const MyBookings = () => {
     let navigate = useNavigate()
@@ -51,11 +52,15 @@ export const MyBookings = () => {
         return () => window.removeEventListener("scroll", handleScroll);
     }, [allBooking, hasMore])
     return (
+
         <Box sx={{
             backgroundColor: "#ccc",
             minHeight: '100vh',
-            paddingTop: '1rem'
+            paddingTop: '1rem',
+            paddingInline: '1rem',
+
         }}>
+            <BackButton />
             {allBooking?.map((booking) =>
                 <Box key={booking._id} style={{
                     backgroundColor: 'white',
@@ -63,12 +68,16 @@ export const MyBookings = () => {
                     display: 'flex',
                     cursor: 'pointer',
                     textDecoration: 'none',
-                    color: 'black'
+                    color: 'black',
+                    borderRadius: "10px",
+                    overflow: 'hidden'
                 }}>
-                    <img src={booking.listing.image[0].url} height={110} onClick={() => { navigate(`/listing/${booking.listing._id}`) }} />
+                    <img src={booking.listing.image[0].url} height={150} onClick={() => { navigate(`/listing/${booking.listing._id}`) }} />
                     <Container onClick={() => { navigate(`/booking/${booking._id}`) }} sx={{
                         display: 'grid',
-                        alignItems: 'center'
+                        alignItems: 'center',
+                        gap: 0.8,
+                        paddingBlock: '0.2rem'
                     }}>
                         <Box>Title - {booking.listing.title}</Box>
                         <Box>
@@ -89,5 +98,6 @@ export const MyBookings = () => {
             )
             }
         </Box >
+
     )
 }
