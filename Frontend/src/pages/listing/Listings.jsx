@@ -50,7 +50,6 @@ export const Listings = () => {
 
         api.get("/listings", { params: { lastId, p } })
             .then(({ data }) => {
-                console.log(allListing)
                 setAllListing(prev => [...prev, ...data.allListing]);
             })
             .catch((response) => { toast.error(response.data) })
@@ -96,9 +95,7 @@ export const Listings = () => {
         fontSize: '2rem',
     }
     const handleSearch = (e)=>{
-        console.log(e)
         api.get(`/listings/searchListing?search=${e}`).then(({data})=>{
-            console.log(data)
             setAllListing(data)
         })
         .catch((error)=>{
