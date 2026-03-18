@@ -91,7 +91,6 @@ export const deleteListing = async (req, res) => {
         if (img.publicId) {
             await cloudinary.uploader.destroy(img.publicId, { resource_type: "image" })
         }
-
     }
     res.status(200).json(listing)
 }
@@ -108,8 +107,9 @@ export const searchListing = async (req, res) => {
                 { city: { $regex: search, $options: 'i' } },
                 { landmark: { $regex: search, $options: 'i' } },
             ]
-        })
-        res.json(listing)
+        }).sort({ _id: -1 }).limit(10)
+
+        res.status(200).json(listing)
     }
 }
 

@@ -69,7 +69,8 @@ const SearchIconWrapper = styled('div')(({ theme }) => ({
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
     flexGrow: 1,
-    padding: '0.5rem'
+    paddingBlock: '0.5rem',
+    paddingInline:'0.8rem'
 }));
 const ListYourHome = styled('div')(({ theme }) => ({
     cursor: 'pointer',
@@ -88,7 +89,7 @@ const styleLinks = {
     textDecoration: 'none',
     color: 'black'
 }
-export const Navbar = () => {
+export const Navbar = ({onSearch}) => {
     const { user, setUser } = useUser()
     const navigate = useNavigate()
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -122,7 +123,7 @@ export const Navbar = () => {
         }
     }
     const handleSearch = (e) => {
-
+        onSearch(e.target.value)
     }
 
     const menuId = 'primary-search-account-menu';
@@ -314,7 +315,7 @@ export const Navbar = () => {
                 />
                 <SearchIconWrapper>
                     <SearchIcon sx={{
-                        fontSize: "1.5rem"
+                        fontSize: "1.5rem",
                     }} />
                 </SearchIconWrapper>
             </SecondSearch>

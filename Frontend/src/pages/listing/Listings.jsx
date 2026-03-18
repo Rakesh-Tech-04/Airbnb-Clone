@@ -50,6 +50,7 @@ export const Listings = () => {
 
         api.get("/listings", { params: { lastId, p } })
             .then(({ data }) => {
+                console.log(allListing)
                 setAllListing(prev => [...prev, ...data.allListing]);
             })
             .catch((response) => { toast.error(response.data) })
@@ -94,10 +95,20 @@ export const Listings = () => {
     const iconStyle = {
         fontSize: '2rem',
     }
+    const handleSearch = (e)=>{
+        console.log(e)
+        api.get(`/listings/searchListing?search=${e}`).then(({data})=>{
+            console.log(data)
+            setAllListing(data)
+        })
+        .catch((error)=>{
+            console.log(error)
+        })
+    }
 
     return (
         <>
-            <Navbar />
+            <Navbar onSearch={handleSearch}/>
             <Box sx={{
                 display: "flex",
                 justifyContent: { sm: 'center' },
@@ -129,7 +140,7 @@ export const Listings = () => {
                 gap: '1rem',
                 marginLeft: '1.5rem'
             }}>
-                {allListing.map((listing, i) =>
+                {allListing.map((listing) =>
                     <Card key={listing._id} sx={{ maxWidth: 345, position: 'relative' }}>
 
                         <Swiper
